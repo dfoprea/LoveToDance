@@ -1,0 +1,19 @@
+BUN VENIT, CORINA!
+----------------------
+Acesta este folderul de unde controlezi tot conținutul site-ului tău LovetoDance.ro.
+
+CUM MODIFICI TEXTELE:
+1. Mergi în folderul paginii dorite (ex: Storage/Despre_Noi).
+2. Deschide fișierul 'text.txt'.
+3. Scrie orice dorești acolo și salvează. Site-ul va afișa automat noul text.
+
+CUM MODIFICI POZELE ȘI FILMELE:
+1. Mergi în folderul 'Galerie' și alege categoria (Salsa, Bachata, etc.).
+2. Pune fișierele tale acolo (poze .jpg/png sau filme .mp4).
+3. Pentru a fi afișate, trebuie doar să rulezi comanda de "Scanare" (o va face Dragos sau Gemini).
+
+LOGO:
+Dacă vrei să schimbi logo-ul, înlocuiește fișierul 'LovetoDance_Logo.jpeg' din acest folder cu unul nou, păstrând exact același nume.
+
+ECHIPA (INSTRUCTORI):
+În Storage/Instructori ai foldere pentru fiecare echipă. Pune o poză numită 'photo.jpg' în folderul respectiv și descrierea în 'text.txt'.

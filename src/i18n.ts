@@ -1,0 +1,288 @@
+export type Language = 'ro' | 'en' | 'de' | 'fr';
+
+export const translations = {
+  ro: {
+    nav: {
+      home: 'Acasa', about: 'Despre Noi', classes: 'Cursuri', schedule: 'Program',
+      events: 'Calendar', instructors: 'Instructori', gallery: 'Galerie',
+      contact: 'Contact', login: 'Cont Elev', pricing: 'Tarife',
+      faq: 'FAQ & Ghid', combinations: 'Combinații',
+      getStarted: 'Incepe', selectLang: 'Limba:', dashboard: 'Admin'
+    },
+    home: {
+      heroTitle: 'Dance your way through life',
+      heroSubtitle: 'Descoperă pasiunea dansurilor latino într-o comunitate plină de energie. Salsa, Bachata și momente de neuitat te așteaptă la LTD Family.',
+      heroBtnPrimary: 'Rezervă prima ședință GRATUITĂ',
+      heroBtnSecondary: 'Vezi Cursurile',
+      twoLeftFeetTitle: 'Ai două picioare stângi?',
+      twoLeftFeetSubtitle: 'E locul perfect pentru tine!',
+      twoLeftFeetDesc: 'Majoritatea cursanților noștri au început de la zero. La Love to Dance, nu ai nevoie de partener sau de experiență anterioară. Corina și echipa LTD te vor ghida pas cu pas, într-o atmosferă relaxată și distractivă.',
+      feature1Title: 'Fără Partener', feature1Desc: 'Vino singur și fă-ți prieteni noi în timpul cursului.',
+      feature2Title: 'De la Zero', feature2Desc: 'Metodă de predare adaptată pentru începători absoluți.',
+      feature3Title: 'Comunitate', feature3Desc: 'Intră în familia LTD și participă la petrecerile noastre.',
+      scheduleTitle: 'Programul Cursurilor',
+      socialTitle: 'Vibe-ul LTD Family',
+      socialSubtitle: 'Urmărește-ne pe Social Media pentru doza zilnică de energie.',
+      communityTitle: 'Inima LTD: Mai mult decât dans',
+      communityDesc: 'Suntem o comunitate de peste 20 de ani. Organizăm ieșiri lunare, tabere la munte și mare, și mergem împreună la festivaluri naționale.'
+    },
+    faq: {
+      title: 'Întrebări Frecvente & Ghid',
+      subtitle: 'Tot ce trebuie să știi înainte să pășești în sala de dans.',
+      contactTitle: 'Mai ai curiozități?',
+      contactDesc: 'Echipa noastră îți răspunde cu drag.',
+      btnContact: 'Contactează-ne'
+    },
+    pricing: {
+      title: 'Tarife Abonamente',
+      subtitle: 'Alege cursul care ți se potrivește. Pasiune și tehnică la fiecare pas.',
+      salsaTitle: 'Salsa & Bachata',
+      salsaDesc: 'Un singur curs în care învățăm ambele stiluri. Perfect pentru socializare.',
+      kizombaTitle: 'Kizomba',
+      kizombaDesc: 'Curs specializat pe tehnică, conexiune și muzicalitate.',
+      btnEnroll: 'ÎNSCRIE-TE',
+      freeTrial: '* Prima ședință este GRATUITĂ pentru începători!',
+      paymentInfo: 'Plata se poate efectua online sau cash la sală.'
+    },
+    instructors: {
+      title: 'Instructorii Tăi',
+      subtitle: 'Profesori dedicați, cu ani de experiență în social dance.',
+      team1: 'Corina & Mickey', team1Desc: 'Fondatorii LTD, cu 20 de ani experiență. Dansatori de nivel competițional.',
+      team2: 'Claudia & Florin', team2Desc: 'Experți în Bachata Sensual și Salsa, aduc o energie incredibilă.',
+      team3: 'Anca & Cristi', team3Desc: 'Specialiștii noștri în Kizomba, te vor învăța magia conexiunii.'
+    },
+    classesPage: {
+      title: 'Cursuri de Dans',
+      subtitle: 'La LovetoDance, nu doar învățăm pași, ci formăm dansatori compleți.',
+      c1Title: 'Conceptul 2-în-1: Salsa & Bachata',
+      c1Desc: 'Deoarece în cluburi muzica alternează, te învățăm ambele stiluri împreună.',
+      c2Title: 'Kizomba',
+      c2Desc: 'Un curs separat dedicat magiei conexiunii și fluidității.',
+      c3Title: 'Rueda de Casino',
+      c3Desc: 'Salsa dansată în cerc - metoda perfectă pentru echipa.',
+      c4Title: 'Social Dance',
+      c4Desc: 'Te pregătim pentru ringul de dans real.'
+    },
+    schedulePage: { title: 'Programul Grupelor', subtitle: 'Splaiul Unirii 162!', tableHeaderDay: 'ZIUA', tableHeaderTime: 'ORA', tableHeaderClass: 'CURS', tableHeaderProfs: 'INSTRUCTORI' },
+    dashboard: { title: 'Admin', guestMode: 'Mod Vizitator', tableTitle: 'Activitate' },
+    loginPage: { title: 'Autentificare', email: 'Email', pass: 'Parola', btn: 'Intră' },
+    signupPage: { title: 'Cont Nou', btn: 'Înregistrare' },
+    checkout: { title: 'Finalizare Înscriere', planLabel: 'Pachet Ales', total: 'Total de plată', btnPay: 'PLĂTEȘTE ÎN SIGURANȚĂ', btnReserve: 'RESERVĂ ACUM' },
+    contactPage: { title: 'Contactează-ne', name: 'Numele tău', email: 'Email/Tel', message: 'Mesaj', btn: 'Trimite' },
+    gallery: { title: 'Momente LTD', subtitle: 'Vezi atmosfera noastră!', filterAll: 'Toate' },
+    footer: { tagline: 'LovetoDance - Pasiune prin dans.', product: 'Cursuri', company: 'Scoala', contact: 'Contact', legal: 'Legal', rights: '2026 LovetoDance.ro' }
+  },
+  en: {
+    nav: {
+      home: 'Home', about: 'About', classes: 'Classes', schedule: 'Schedule',
+      events: 'Events', instructors: 'Instructors', gallery: 'Gallery',
+      contact: 'Contact', login: 'Login', pricing: 'Pricing',
+      faq: 'FAQ & Guide', combinations: 'Combos',
+      getStarted: 'Start', selectLang: 'Language:', dashboard: 'Admin'
+    },
+    home: {
+      heroTitle: 'Dance your way through life',
+      heroSubtitle: 'Discover the passion of Latin dances. Salsa, Bachata and unforgettable moments await you at LTD Family.',
+      heroBtnPrimary: 'Book your first FREE session',
+      heroBtnSecondary: 'View Courses',
+      twoLeftFeetTitle: 'Two left feet?',
+      twoLeftFeetSubtitle: 'The perfect place for you!',
+      twoLeftFeetDesc: 'Most of our students started from scratch. No partner or previous experience needed. Our team will guide you step by step.',
+      feature1Title: 'No Partner', feature1Desc: 'Come alone and make new friends.',
+      feature2Title: 'From Scratch', feature2Desc: 'Adapted for absolute beginners.',
+      feature3Title: 'Community', feature3Desc: 'Join the LTD family parties.',
+      scheduleTitle: 'Class Schedule',
+      socialTitle: 'LTD Family Vibe',
+      socialSubtitle: 'Follow us on Social Media for your daily dose of energy.',
+      communityTitle: 'LTD Heart: More than just dance',
+      communityDesc: 'A community for over 20 years. We organize monthly outings, mountain/sea trips, and attend national festivals together.'
+    },
+    faq: {
+      title: 'FAQ & Guide',
+      subtitle: 'Everything you need to know before stepping into the dance hall.',
+      contactTitle: 'More questions?',
+      contactDesc: 'Our team is happy to answer.',
+      btnContact: 'Contact Us'
+    },
+    pricing: {
+      title: 'Pricing & Plans',
+      subtitle: 'Choose the course that suits you best. Passion and technique at every step.',
+      salsaTitle: 'Salsa & Bachata',
+      salsaDesc: 'One course where we learn both styles. Perfect for socializing.',
+      kizombaTitle: 'Kizomba',
+      kizombaDesc: 'Specialized course on technique, connection, and musicality.',
+      btnEnroll: 'ENROLL NOW',
+      freeTrial: '* First session is FREE for beginners!',
+      paymentInfo: 'Payment can be made online or cash at the studio.'
+    },
+    instructors: {
+      title: 'Your Instructors',
+      subtitle: 'Dedicated teachers with years of experience.',
+      team1: 'Corina & Mickey', team1Desc: 'LTD Founders with 20 years of experience. Competition-level dancers.',
+      team2: 'Claudia & Florin', team2Desc: 'Bachata Sensual and Salsa experts with incredible energy.',
+      team3: 'Anca & Cristi', team3Desc: 'Kizomba specialists teaching the magic of connection.'
+    },
+    classesPage: {
+      title: 'Dance Classes',
+      subtitle: 'We build complete dancers.',
+      c1Title: '2-in-1: Salsa & Bachata',
+      c1Desc: 'We teach both styles together for versatility.',
+      c2Title: 'Kizomba',
+      c2Desc: 'Dedicated to connection and fluidity.',
+      c3Title: 'Rueda de Casino',
+      c3Desc: 'Salsa in a circle - perfect for teamwork.',
+      c4Title: 'Social Dance',
+      c4Desc: 'Preparing you for the real dancefloor.'
+    },
+    schedulePage: { title: 'Schedule', subtitle: 'Visit us at Splaiul Unirii 162!', tableHeaderDay: 'DAY', tableHeaderTime: 'TIME', tableHeaderClass: 'CLASS', tableHeaderProfs: 'INSTRUCTORS' },
+    dashboard: { title: 'Admin', guestMode: 'Guest Mode', tableTitle: 'Activity' },
+    loginPage: { title: 'Login', email: 'Email', pass: 'Password', btn: 'Login' },
+    signupPage: { title: 'Sign Up', btn: 'Register' },
+    checkout: { title: 'Checkout', planLabel: 'Selected Plan', total: 'Total', btnPay: 'SECURE PAYMENT', btnReserve: 'RESERVE NOW' },
+    contactPage: { title: 'Contact Us', name: 'Name', email: 'Email/Tel', message: 'Message', btn: 'Send' },
+    gallery: { title: 'LTD Moments', subtitle: 'See our vibe!', filterAll: 'All' },
+    footer: { tagline: 'LovetoDance - Passion through dance.', product: 'Classes', company: 'School', contact: 'Contact', legal: 'Legal', rights: '2026 LovetoDance.ro' }
+  },
+  de: {
+    nav: {
+      home: 'Start', about: 'Über uns', classes: 'Kurse', schedule: 'Programm',
+      events: 'Events', instructors: 'Lehrer', gallery: 'Galerie',
+      contact: 'Kontakt', login: 'Login', pricing: 'Preise',
+      faq: 'FAQ & Guide', combinations: 'Kombis',
+      getStarted: 'Start', selectLang: 'Sprache:', dashboard: 'Admin'
+    },
+    home: {
+      heroTitle: 'Tanzen Sie durch das Leben',
+      heroSubtitle: 'Entdecken Sie die Leidenschaft lateinamerikanischer Tänze. Salsa, Bachata und unvergessliche Momente lauern bei LTD Family.',
+      heroBtnPrimary: 'Erste Stunde GRATIS buchen',
+      heroBtnSecondary: 'Kurse ansehen',
+      twoLeftFeetTitle: 'Zwei linke Füße?',
+      twoLeftFeetSubtitle: 'Der perfekte Ort für Sie!',
+      twoLeftFeetDesc: 'Die meisten unserer Schüler haben bei Null angefangen. Bei Love to Dance brauchen Sie keinen Partner oder Vorkenntnisse.',
+      feature1Title: 'Ohne Partner', feature1Desc: 'Kommen Sie allein und lernen Sie neue Freunde kennen.',
+      feature2Title: 'Ab Null', feature2Desc: 'Lehrmethode für absolute Anfänger angepasst.',
+      feature3Title: 'Gemeinschaft', feature3Desc: 'Treten Sie der LTD-Familie bei.',
+      scheduleTitle: 'Stundenplan',
+      socialTitle: 'LTD Family Vibe',
+      socialSubtitle: 'Folgen Sie uns auf Social Media für Ihre tägliche Dosis Energie.',
+      communityTitle: 'Das Herz von LTD: Mehr als Tanz',
+      communityDesc: 'Seit über 20 Jahren eine Gemeinschaft. Monatliche Ausflüge, Reisen und Festivals.'
+    },
+    faq: {
+      title: 'FAQ & Leitfaden',
+      subtitle: 'Alles, was Sie wissen müssen, bevor Sie den Tanzsaal betreten.',
+      contactTitle: 'Noch Fragen?',
+      contactDesc: 'Unser Team antwortet Ihnen gerne.',
+      btnContact: 'Kontaktieren Sie uns'
+    },
+    pricing: {
+      title: 'Preise & Abos',
+      subtitle: 'Wählen Sie den Kurs, der zu Ihnen passt. Leidenschaft bei jedem Schritt.',
+      salsaTitle: 'Salsa & Bachata',
+      salsaDesc: 'Ein Kurs, in dem wir beide Stile lernen. Perfekt zum Socializing.',
+      kizombaTitle: 'Kizomba',
+      kizombaDesc: 'Spezialisierter Kurs für Technik, Verbindung und Musikalität.',
+      btnEnroll: 'JETZT ANMELDEN',
+      freeTrial: '* Die erste Stunde este GRATIS für Anfänger!',
+      paymentInfo: 'Zahlung online sau bar im Studio möglich.'
+    },
+    instructors: {
+      title: 'Ihre Lehrer',
+      subtitle: 'Engagierte Lehrer mit jahrelanger Erfahrung im Social Dance.',
+      team1: 'Corina & Mickey', team1Desc: 'Gründer von LTD, 20 Jahre Erfahrung. Turniertänzer.',
+      team2: 'Claudia & Florin', team2Desc: 'Experten für Bachata Sensual und Salsa.',
+      team3: 'Anca & Cristi', team3Desc: 'Kizomba-Spezialisten für die Magie der Verbindung.'
+    },
+    classesPage: {
+      title: 'Tanzkurse',
+      subtitle: 'Wir bilden komplette Tänzer aus.',
+      c1Title: '2-in-1 Konzept: Salsa & Bachata',
+      c1Desc: 'Wir unterrichten beide Stile zusammen für mehr Vielseitigkeit.',
+      c2Title: 'Kizomba',
+      c2Desc: 'Ein Kurs für tiefe nonverbale Kommunikation und Flow.',
+      c3Title: 'Rueda de Casino',
+      c3Desc: 'Salsa im Kreis - perfekt für den Teamgeist.',
+      c4Title: 'Social Dance',
+      c4Desc: 'Wir bereiten Sie auf die echte Tanzfläche vor.'
+    },
+    schedulePage: { title: 'Stundenplan', subtitle: 'Besuchen Sie uns in Splaiul Unirii 162!', tableHeaderDay: 'TAG', tableHeaderTime: 'ZEIT', tableHeaderClass: 'KURS', tableHeaderProfs: 'LEHRER' },
+    dashboard: { title: 'Dashboard', guestMode: 'Gastmodus', tableTitle: 'Aktivität' },
+    loginPage: { title: 'Login', email: 'E-Mail', pass: 'Passwort', btn: 'Anmelden' },
+    signupPage: { title: 'Registrieren', btn: 'Konto erstellen' },
+    checkout: { title: 'Kasse', planLabel: 'Gewähltes Abo', total: 'Gesamt', btnPay: 'SICHER BEZAHLEN', btnReserve: 'JETZT RESERVIEREN' },
+    contactPage: { title: 'Kontakt', name: 'Name', email: 'E-Mail/Tel', message: 'Nachricht', btn: 'Senden' },
+    gallery: { title: 'LTD Momente', subtitle: 'Unsere Atmosphäre!', filterAll: 'Alle' },
+    footer: { tagline: 'LovetoDance - Leidenschaft durch Tanz.', product: 'Kurse', company: 'Schule', contact: 'Kontakt', legal: 'Rechtliches', rights: '2026 LovetoDance.ro' }
+  },
+  fr: {
+    nav: {
+      home: 'Accueil', about: 'À propos', classes: 'Cours', schedule: 'Planning',
+      events: 'Événements', instructors: 'Profs', gallery: 'Galerie',
+      contact: 'Contact', login: 'Espace Élève', pricing: 'Tarifs',
+      faq: 'FAQ & Guide', combinations: 'Combos',
+      getStarted: 'Commencer', selectLang: 'Langue:', dashboard: 'Admin'
+    },
+    home: {
+      heroTitle: 'Dansez à travers la vie',
+      heroSubtitle: 'Découvrez la passion des danses latines dans une communauté énergique. Salsa, Bachata et moments inoubliables vous attendent chez LTD Family.',
+      heroBtnPrimary: 'Réservez votre 1er cours GRATUIT',
+      heroBtnSecondary: 'Voir les Cours',
+      twoLeftFeetTitle: 'Deux pieds gauches ?',
+      twoLeftFeetSubtitle: 'L\'endroit parfait pour vous !',
+      twoLeftFeetDesc: 'La plupart de nos élèves ont commencé de zéro. Chez Love to Dance, pas besoin de partenaire ou d\'expérience préalable.',
+      feature1Title: 'Sans Partenaire', feature1Desc: 'Venez seul et faites-vous de nouveaux amis.',
+      feature2Title: 'De Zéro', feature2Desc: 'Méthode d\'enseignement adaptée aux débutants absolus.',
+      feature3Title: 'Communauté', feature3Desc: 'Rejoignez la famille LTD et participez à nos soirées.',
+      scheduleTitle: 'Emploi du temps',
+      socialTitle: 'L\'ambiance LTD Family',
+      socialSubtitle: 'Suivez-nous sur les réseaux sociaux pour votre dose d\'énergie.',
+      communityTitle: 'Le Cœur de LTD : Plus que de la danse',
+      communityDesc: 'Une communauté depuis plus de 20 ans. Sorties mensuelles, voyages et festivals nationaux.'
+    },
+    faq: {
+      title: 'FAQ & Guide',
+      subtitle: 'Tout ce que vous devez savoir avant de franchir la porte du studio.',
+      contactTitle: 'D\'autres questions ?',
+      contactDesc: 'Notre équipe se fera un plaisir de vous répondre.',
+      btnContact: 'Contactez-nous'
+    },
+    pricing: {
+      title: 'Tarifs & Abonnements',
+      subtitle: 'Choisissez le cours qui vous convient. La passion à chaque pas.',
+      salsaTitle: 'Salsa & Bachata',
+      salsaDesc: 'Un seul cours pour apprendre les deux styles. Parfait pour socialiser.',
+      kizombaTitle: 'Kizomba',
+      kizombaDesc: 'Cours spécialisé sur la technique, la connexion et la musicalité.',
+      btnEnroll: 'S\'INSCRIRE',
+      freeTrial: '* La première séance est GRATUITE pour les débutants !',
+      paymentInfo: 'Paiement en ligne ou espèces au studio.'
+    },
+    instructors: {
+      title: 'Vos Professeurs',
+      subtitle: 'Des professeurs passionnés avec des années d\'expérience.',
+      team1: 'Corina & Mickey', team1Desc: 'Fondateurs de LTD, 20 ans d\'expérience. Danseurs de compétition.',
+      team2: 'Claudia & Florin', team2Desc: 'Experts en Bachata Sensual et Salsa.',
+      team3: 'Anca & Cristi', team3Desc: 'Spécialistes Kizomba pour la magie de la connexion.'
+    },
+    classesPage: {
+      title: 'Cours de Danse',
+      subtitle: 'Nous formons des danseurs complets.',
+      c1Title: 'Concept 2-en-1 : Salsa & Bachata',
+      c1Desc: 'Nous enseignons les deux styles ensemble pour plus de polyvalence.',
+      c2Title: 'Kizomba',
+      c2Desc: 'Un cours dédié à la fluidité et à la communication profonde.',
+      c3Title: 'Rueda de Casino',
+      c3Desc: 'Salsa en cercle - parfait pour l\'esprit d\'équipe.',
+      c4Title: 'Social Dance',
+      c4Desc: 'Nous vous préparons pour la vraie piste de danse.'
+    },
+    schedulePage: { title: 'Emploi du Temps', subtitle: 'Rendez-vous au Splaiul Unirii 162 !', tableHeaderDay: 'JOUR', tableHeaderTime: 'HEURE', tableHeaderClass: 'COURS', tableHeaderProfs: 'PROFS' },
+    dashboard: { title: 'Admin', guestMode: 'Mode Invité', tableTitle: 'Activité' },
+    loginPage: { title: 'Connexion', email: 'Email', pass: 'Mot de passe', btn: 'Entrer' },
+    signupPage: { title: 'Inscription', btn: 'S\'inscrire' },
+    checkout: { title: 'Paiement', planLabel: 'Forfait Choisi', total: 'Total', btnPay: 'PAYER EN SÉCURITÉ', btnReserve: 'RÉSERVER MAINTENANT' },
+    contactPage: { title: 'Contact', name: 'Nom', email: 'Email/Tél', message: 'Message', btn: 'Envoyer' },
+    gallery: { title: 'Moments LTD', subtitle: 'Découvrez notre ambiance !', filterAll: 'Tous' },
+    footer: { tagline: 'LovetoDance - La passion par la danse.', product: 'Cours', company: 'Ecole', contact: 'Contact', legal: 'Légal', rights: '2026 LovetoDance.ro' }
+  }
+};
