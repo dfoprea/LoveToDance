@@ -2,42 +2,116 @@
 
 Acest document conține istoricul funcționalităților implementate în platforma web LoveToDance, alături de motivul și utilitatea fiecărei alegeri arhitecturale sau de business.
 
+## 1. Arhitectură și Design
+* **Implementare:** Design hibrid cu **Dark Mode ca temă implicită** și opțiune clară de comutare către **Light Mode**, pentru a acoperi preferințele tuturor utilizatorilor. Estetica este inspirată puternic din platforme de top (ex. Melómano), folosind un "Video-First Hero Section" (o secțiune principală animată cu material video din școală), integrată organic cu elementele de branding din bannerul oficial LTD (roșu purpuriu pasional, accente metalice).
+* **Motiv/Utilitate:** Un fundal întunecat (dark mode) recreează sensação de "social party" și scoate în evidență elementele media (foto/video), dar existența unei teme luminoase asigură accesibilitate maximă pe timpul zilei. Video-ul de fundal captează atenția instant și comunică "energia" dansului mai bine decât orice text.
+
+## 2. Sistemul de Administrare (Dashboard) și Personalizare Live (Theme Builder)
+* **Implementare:** Arhitectură tehnică bazată pe **Variabile CSS dinamice** (ex. `--primary`, `--bg-dark`, `--radius-btn`). Am implementat un modul "Theme Builder" în panoul de Admin (Dashboard). 
+* **Motiv/Utilitate:** Proprietarul (Corina) primește un panou de control vizual de unde poate schimba culorile (accent, fundal, carduri) și razele de curbură (colțuri rotunjite) folosind selectoare vizuale (color pickers și slidere). Modificările se aplică *în timp real* pe un sample vizual din dashboard și afectează instant întreg site-ul, eliminând nevoia intervenției unui dezvoltator pentru ajustări de branding.
+
+## 3. Sistem Universal de Tag-uri
+* **Implementare:** Toate entitățile de pe site (videouri, poze, texte, componente) sunt indexate folosind un sistem de Tag-uri (etichete). Tag-urile speciale de tip "admin" sau "privat" controlează vizibilitatea.
+* **Motiv/Utilitate:** Facilitează o administrare modulară și extrem de flexibilă a conținutului. Ordonarea, căutarea și filtrarea se fac instant. Proprietarul poate ascunde/afișa secțiuni întregi pe baza tag-urilor.
+
+## 4. Biblioteca Video (Pagina "Combinații / Combo-uri") și Format Vertical
+* **Implementare:** O secțiune dedicată (arhivă video) pentru postarea coregrafiilor. Formatul player-ului și al materialelor video va fi orientat cu prioritate către **formatul vertical (tip TikTok/Reels, 9:16)**.
+* **Motiv/Utilitate:** Rezolvă problema pierderii materialelor video pe grupurile de WhatsApp. Crește masiv retenția elevilor. Alegerea formatului vertical este dictată de comportamentul utilizatorilor: majoritatea covârșitoare a cursanților accesează platforma de pe telefonul mobil, iar formatul TikTok maximizează spațiul pe ecran și oferă o experiență de vizionare fluidă, naturală pentru 2026.
+
+## 5. Integrare Harta Google (Google Maps)
+* **Implementare:** Harta interactivă cu pinpoint pe adresa studioului (Splaiul Unirii 162).
+* **Motiv/Utilitate:** Înlătură orice barieră de navigare pentru clienții noi (începătorii) care vin la prima ședință gratuită. Oferă credibilitate locală și ajută la SEO pe zona București.
+
+## 6. Social Wall (Integrare Instagram & TikTok)
+* **Implementare:** Grilă vizuală care preia / mimează estetica platformelor sociale unde școala este activă, integrând link-urile oficiale de Instagram și TikTok ale școlii.
+* **Motiv/Utilitate:** Dansul social vinde prin "vibe" și emoție. Afișarea energiei din comunitatea "LTD Family" direct pe site scade reticența celor care cred că au "două picioare stângi" și arată latura umană, de socializare, a școlii.
+
+## 7. Sistem de Auto-Discovery pentru Galerie
+* **Implementare:** Folosirea tehnologiei Vite Glob Import pentru a scana automat folderul `/public/Storage/Galerie`.
+* **Motiv/Utilitate:** Automatizează complet mentenanța galeriei. Corina nu mai trebuie să modifice codul site-ului; este suficient să încarce fișiere în folderele corespunzătoare (Salsa, Bachata etc.), iar site-ul le va afișa instantaneu.
+
+## 8. Controlul Ordinii prin Convenție de Nume (Smart Sorting)
+* **Implementare:** Sistem de sortare bazat pe prefixul `[AAAA-LL-ZZ]` în numele fișierului.
+* **Motiv/Utilitate:** Oferă administratorului control total asupra ordinii de afișare fără a avea nevoie de o bază de date. Permite "forțarea" unor materiale vechi în față sau organizarea cronologică precisă a evenimentelor prin simpla redenumire a fișierelor.
+
+## 9. Interacțiune Avansată în Vizualizatorul Media
+* **Implementare:** Împărțirea zonei video în regiuni active (Centru pentru Play/Pause, Margini pentru Navigare) și implementarea gesturilor de tip **Swipe** (glisare).
+* **Motiv/Utilitate:** Oferă o experiență de utilizare "app-like", similară cu TikTok sau Instagram. Utilizatorii pot naviga rapid prin colecția video folosind gesturi naturale pe mobil sau click-uri intuitive pe desktop.
+
+## 10. Bara de Miniaturi (Thumbnails) Interactivă
+* **Implementare:** Drag-to-scroll (apucă și trage), Horizontal Wheel Scroll (derulare cu rotița mouse-ului) și generare automată de snapshot-uri din prima secundă a videoclipurilor.
+* **Motiv/Utilitate:** Face navigarea prin zeci de videoclipuri rapidă și vizuală. Snapshots-urile elimină necesitatea de a încărca tot videoclipul pentru a vedea ce conține, economisind date mobile și timp de încărcare.
+
+## 11. Internaționalizare (i18n) Extinsă
+* **Implementare:** Maparea completă a paginilor de Instructori, Cursuri și Program în sistemul de traduceri (RO, EN, DE, FR).
+* **Motiv/Utilitate:** Permite școlii să atragă și expați sau turiști aflați în București, oferind o imagine profesională și incluzivă.
+
+## 12. Optimizare Header și Layout (Mobile-Ready)
+* **Implementare:** Header compact (80px), z-index maxim (9999), Redimensionare Logo și eliminarea elementelor redundante.
+* **Motiv/Utilitate:** Rezolvă problemele de accesibilitate unde butoanele nu puteau fi apăsate din cauza suprapunerilor. Garantează că meniul rămâne funcțional și vizibil pe orice dimensiune de ecran.
+
+## 13. LTD Social Hub (Comentarii și Tag-uri)
+* **Implementare:** Integrarea unui panou lateral de interacțiune în stil Facebook/Instagram, folosind `localStorage` pentru persistența datelor la nivel de browser. Fiecare fișier media are un ID unic generat din numele său, de care sunt legate comentariile și etichetele.
+* **Motiv/Utilitate:** Transformă site-ul dintr-o galerie statică într-o platformă socială interactivă. Permite cursanților să interacționeze, să își lase feedback-ul și să organizeze conținutul prin tag-uri (ex: #tehnica, #petrecere). Este un instrument puternic de "Social Proof" - vizitatorii noi văd activitatea și entuziasmul comunității direct lângă materialele video.
+
+## 14. Secțiune Final CTA cu Efect Parallax
+* **Implementare:** Integrarea bannerului oficial LTD ca fundal fix (parallax) în secțiunea de Program și pe prima pagină, cu un overlay de gradient adaptiv.
+* **Motiv/Utilitate:** Bannerul LTD ancorează brandingul în subconștientul vizitatorului. Efectul de parallax adaugă o notă premium, de site modern de top.
+
+## 15. Sistem de Autentificare și Roluri (Auth System)
+* **Implementare:** Arhitectură bazată pe `AuthContext` cu persistență în `localStorage`. Sistem de roluri: **Admin** (acces total la Dashboard prin utilizatorul `admin/admin`) și **Student**.
+* **Motiv/Utilitate:** Permite o gestionare securizată a site-ului. Butonul de Login este dinamic, transformându-se în "⚙️ Admin" sau "👤 Profil" după autentificare, protejând zonele administrative.
+
+## 16. Modul de Checkout Avansat
+* **Implementare:** Flux de înscriere complet cu selecția metodelor de plată (Card, PayPal, Cash la sală), recapitulativ de comandă și mesaje de securitate ("Conexiune SSL securizată").
+* **Motiv/Utilitate:** Crește rata de conversie prin oferirea unui proces de plată transparent și profesionist. Opțiunea "Cash la sală" încurajă înscrierea rapidă a celor reticenți la plățile online.
+
+## 17. Sistem Global de Notificări (Toasts)
+* **Implementare:** Înlocuirea ferestrelor de `alert()` cu notificări animate de tip Toast în colțul dreapta-jos al ecranului (Succes, Eroare, Info).
+* **Motiv/Utilitate:** Îmbunătățește experiența utilizatorului prin feedback non-invaziv, oferind site-ului o senzație de aplicație modernă.
+
+## 18. SEO Tehnic Avansat și Local Business Schema
+* **Implementare:** 
+    * **JSON-LD:** Schema "DanceSchool" pentru recunoașterea automată a adresei, orarului și telefonului de către Google.
+    * **SEOUpdater:** Script dinamic care actualizează Meta Tag-urile la fiecare schimbare de pagină.
+    * **Robots & Sitemap:** Generarea automată a fișierelor de indexare.
+* **Motiv/Utilitate:** Corectează deficiențele de marketing organic. LTD este acum optimizat pentru a apărea în căutările locale și pe Google Maps.
+
+## 19. Optimizare Mobilă și UX Tactil
+* **Implementare:** Navigație de tip "Slider" pe mobil, hitbox-uri de 44px, adaptarea grilelor și optimizarea video-ului vertical.
+* **Motiv/Utilitate:** Site-ul este acum 100% "Mobile-First", fiind ușor de folosit cu o singură mână pe orice smartphone.
+
+## 20. Arhitectură pentru Producție (Deploy Ready)
+* **Implementare:** Fixare căi media relative, logică de extragere URL-uri din module Vite și fișier `_redirects` pentru SPA.
+* **Motiv/Utilitate:** Asigură funcționarea perfectă pe Netlify fără ecrane albe sau crash-uri JavaScript.
+
+## 21. Fluiditatea vizuală (framer-motion și lucide-react)
+* **Implementare:** 
+    * **Animații de Intrare:** Integrarea `framer-motion` pentru a anima apariția elementelor pe pagină.
+    * **Iconițe Modern:** Utilizarea `lucide-react`.
+* **Motiv/Utilitate:** Crește calitatea percepută a platformei. Mișcările fluide fac site-ul să se simtă "viu" și premium.
+
+## Capitolul 11: Ecosistemul Social LoveToDance (LTD Social) - [2026-03-02]
+*   **Persistență Local-First:** Toate interacțiunile utilizatorului sunt salvate în `localStorage`.
+*   **Modele Sociale Adaptate:** Model Vertical (Galerie) vs Overlay Drawer (TikTok Style).
+
+## Capitolul 12: Ghid de Utilizare - Dashboard Admin (LTD Control) - [2026-03-02]
+*   **Theme Builder:** Personalizarea identității vizuale live.
+*   **CMS:** Modificarea textelor live.
+*   **Moderare:** Controlul comentariilor și al tag-urilor.
+
 ## Capitolul 13: Dashboard Admin v3.0 (Business Intelligence & CRM) - [2026-03-02]
+*   **Analytics BI (Power BI Style):** Motor de tip Pivot Table cu Drag & Drop pentru axe (X, Y, Legendă). Permite analize complexe (ex: Comentarii pe Timeline segmentate pe Stil Dans).
+*   **Community CRM:** Tabel automat cu toți utilizatorii, statistici de engagement, pagini vizitate și switch de Banare instantanee.
+*   **Branding Studio 2.0:** Panou de Live Preview care randează elementele site-ului în timp real pe măsură ce se schimbă culorile sau rotunjimile.
+*   **CMS Editor v2:** Organizare pe tab-uri de pagini și input-uri inteligente.
+*   **Rafinamente:** Uniformizare brand **LoveToDance**, restaurare stil cursiv Hero, reordonare meniuri (FAQ).
 
-Actualizarea majoră v3.0 transformă Dashboard-ul dintr-o unealtă simplă de editare într-un centru veritabil de control al afacerii și al comunității, inspirat din standardele profesionale Power BI și sistemele CRM moderne.
-
-### 1. Analytics BI (Business Intelligence Power BI Style)
-*   **Implementare:** Integrarea bibliotecii `Recharts` pentru vizualizări interactive. Am implementat un motor de tip "Pivot Table" care permite încrucișarea dinamică a datelor.
-*   **Generator de Rapoarte (Drag & Drop):** Corina poate trage "pastile" cu metrici (Likes, Comentarii, Engagement) și dimensiuni (Timeline, Stiluri Dans, Tag-uri) în zone dedicate pentru a construi rapoarte instantanee.
-*   **Sincronizare Duală:** Un singur panou de intrare (Input) controlează simultan două grafice de ieșire: unul liniar (Evoluție) și unul de tip bare (Distribuție), oferind perspective vizuale diferite asupra acelorași date.
-*   **Legenda (Segmentare):** Posibilitatea de a tăia datele pe o a treia axă. De exemplu: Vizualizarea Comentariilor (Y) pe Timeline (X) segmentate pe Stiluri de Dans (Z/Legenda), generând linii multiple colorate.
-*   **Motiv/Utilitate:** Permite Corinei să înțeleagă exact ce tip de conținut "vinde" și care stil de dans generează cel mai mare interes în comunitate, facilitând decizii de business bazate pe date, nu pe intuiție.
-
-### 2. Community Explorer (CRM de Comunitate)
-*   **Implementare:** Tabel avansat de management al utilizatorilor care extrage automat datele din interacțiunile de pe site.
-*   **Profile Active:** Fiecare utilizator care a interacționat are un profil cu: Nume, Avatar, Număr total de comentarii și like-uri, listă de pagini vizitate, data primei și ultimei activități.
-*   **Sistem de Banare (One-Click):** Un switch (bifă) care permite blocarea sau deblocarea instantanee a unui utilizator direct din tabel, fără a scrie manual numele.
-*   **Motiv/Utilitate:** Oferă o imagine clară asupra "super-fanilor" școlii și permite menținerea unui mediu sigur prin eliminarea rapidă a spam-ului sau a comportamentelor nepotrivite.
-
-### 3. Branding Studio 2.0 (Live Theme Editor)
-*   **Implementare:** Extinderea controlului asupra tuturor variabilelor de design: Primary, Secondary, Background Dark, Background Card, Text Main, Text Muted, plus razele de curbură (Border Radius).
-*   **Live Preview:** Un panou lateral care randează în timp real o mini-pagină de test (Titlu, Paragraf, Butoane, Carduri) pe măsură ce Corina schimbă culorile.
-*   **Motiv/Utilitate:** Corina poate schimba atmosfera site-ului pentru evenimente speciale (ex: Halloween, Valentines) în câteva secunde, având siguranța contrastului și a aspectului vizual înainte de a salva.
-
-### 4. CMS Editor Structurat (Content Management)
-*   **Implementare:** Reorganizarea editorului de texte în tab-uri pe pagini (HOME, NAV, FAQ, etc.) și input-uri inteligente care se transformă automat în `textarea` pentru texte lungi.
-*   **Motiv/Utilitate:** Elimină scroll-ul infinit și confuzia. Editarea textelor devine la fel de simplă ca completarea unui formular organizat.
-
-### 5. Rafinamente de Branding și UX
-*   **Logo & Brand:** Uniformizarea numelui brandului în **LoveToDance** (cu corectarea literei T) în tot ecosistemul.
-*   **Stil Hero Badge:** Restaurarea stilului cursiv roșu original pentru badge-ul de pe prima pagină, cu o îngroșare suplimentară pentru impact maxim.
-*   **FAQ Reordering:** Mutarea secțiunii FAQ între Galerie și Contact pentru un flux de navigare mai logic.
-*   **Butoane de Acțiune:** Uniformizarea stilului butoanelor (roșu cu text alb) și adăugarea efectului de "blur" pentru butoanele secundare peste video, pentru a garanta lizibilitatea.
-
-## 28. Actualizare Recentă (Recent Update)
-*   **Versiune:** Dashboard de Admin v3.0
+---
+## 🆕 Recent Update: Actualizare Dashboard de Admin (v3.0)
 *   **Data:** 2 Martie 2026
-*   **Focus:** Transformarea administrării în Business Intelligence, CRM integrat și Live Branding Preview.
+*   **Status:** Implementat & Online
+*   **Modificări:** Power BI Pivot Engine, Community CRM, Branding Studio 2.0, Unified Brand Identity (LoveToDance).
 
 ---
 *Document actualizat pe 2 Martie 2026.*
