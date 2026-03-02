@@ -8,10 +8,10 @@ Vizualizează aplicația live aici: **[https://love-to-dance-family.surge.sh/](h
 ---
 
 ## 🆕 Recent Update: Fluiditate & Design (Martie 2026)
-Ultimul update a adus o transformare majoră la nivel de experiență utilizator (UX):
+Ultimul update a adus o transformare majoră la nivel de experiență utilizator (UX), oferind platformei o **„notă premium” de fluiditate și design**:
 - **Fluiditate Vizuală:** Întreg site-ul a fost optimizat folosind bibliotecile **framer-motion** și **lucide-react**, oferind tranziții line și interacțiuni naturale.
 - **Responsivitate Maximă:** Interfața a fost reconstruită pentru a fi mult mai responsivă, adaptându-se instantaneu pe orice rezoluție.
-- **Hover & Feedback:** Implementarea unui sistem discret de feedback vizual (glow effect).
+- **Hover & Feedback:** Implementarea unui sistem discret de feedback vizual (glow effect) care confirmă interacțiunea într-un mod elegant.
 
 ### 🛡️ Optimizare SEO & Performanță
 Utilizarea bibliotecilor **framer-motion** și **lucide-react** nu afectează negativ SEO, ci contribuie activ la succesul platformei:
