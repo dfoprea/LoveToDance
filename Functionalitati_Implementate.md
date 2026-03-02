@@ -161,5 +161,36 @@ Acest document conține istoricul funcționalităților implementate în platfor
     * **Animații de Interfață (Framer Motion):** Integrarea unor animații subtile, profesionale, pe paginile statice (**Cursuri**, **Combinații**, **FAQ** și **Program**). Cardurile au acum efecte soft de tip "Hover" (ridicare ușoară și accentuare a umbrei), iar la încărcarea paginii elementele apar lin prin efecte de `fadeInUp`. S-a renunțat la animațiile lente sau intruzive (ex. "stagger") la cererea expresă, pentru a menține aplicația "snappy" și rapidă.
 * **Motiv/Utilitate:** Un UI "pixel-perfect" și un UX intuitiv sporesc substanțial încrederea utilizatorilor. Meniul perfect vizibil previne frustrarea, redarea video corectă asigură consumul de conținut fără erori, iar animațiile din `framer-motion` transformă paginile altfel statice într-o experiență premium, modernă, demnă de o școală de dans de top.
 
+## Capitolul 11: Ecosistemul Social Love2Dance (LTD Social) - [2026-03-02]
+
+Acest capitol documentează transformarea site-ului dintr-o prezentare statică într-o platformă socială interactivă. Am implementat un sistem complet de interacțiune (Like, Comment, Share, Tags) bazat pe următoarele principii tehnice și de design:
+
+### 1. Arhitectura de Date (Social State Manager)
+*   **Persistență Local-First:** Toate interacțiunile utilizatorului sunt salvate în `localStorage` sub cheia `ltd_social_data`. Această alegere oferă o viteză instantanee de reacție și suveranitate asupra datelor.
+*   **Unique ID Mapping:** Fiecare fișier media are un ID unic generat din calea sa (ex: `salsa-video1.mp4`). Acest ID servește drept cheie pentru a lega Like-urile și Comentariile de conținutul respectiv.
+*   **Safe Data Extraction:** Logica de randare folosește un sistem de "fallback" (ex: `item.comments || []`), prevenind erorile de tip `undefined` dacă un videoclip are Like-uri dar nu are încă comentarii.
+
+### 2. Soluții pentru Stabilitatea Interfeței (UX Stability)
+Una dintre cele mai mari provocări a fost prevenirea "săriturii" (jumping) videoclipului la deschiderea comentariilor. Am rezolvat acest lucru prin:
+*   **Layer Isolation (Tehnică Critică):** În pagina de **Combinatii**, am izolat videoclipul într-un container cu `position: absolute; inset: 0`. Astfel, spațiul său este rezervat permanent, iar apariția elementelor deasupra (comentariile) nu mai forțează browserul să recalculeze dimensiunile video-ului.
+*   **DOM Preservation:** Bara de interacțiune (`Like`/`Share`) nu mai este ștearsă din cod când se deschid comentariile, ci devine doar transparentă (`opacity: 0`). Acest lucru menține structura DOM-ului intactă, eliminând orice motiv pentru layout shift.
+*   **Internal Smooth Scroll:** Am înlocuit `scrollIntoView` (care mișca toată pagina) cu `.scrollTo({ top: scrollHeight })` aplicat strict pe lista internă de comentarii.
+
+### 3. Modele Sociale Adaptate (Facebook vs TikTok)
+Am implementat două experiențe de vizualizare diferite, în funcție de context:
+*   **Modelul Vertical (Galerie):** Inspirat de Facebook, unde media ocupă toată lățimea, iar discuțiile curg generos dedesubt (Split 70% Comentarii / 30% Tags).
+*   **Modelul Overlay Drawer (Combinatii):** Inspirat de TikTok/Reels, unde un sertar transparent (negru 60%, fără blur pentru claritate maximă) glisează peste treimea inferioară a videoclipului, permițând discuția fără a pierde acțiunea de fundal.
+
+### 4. Sistemul Dinamic de Tags (Metadate Active)
+*   **Filtrare Universală:** Un click pe un tag (pastilă mică gri/roz) activează un filtru care reduce galeria doar la momentele respective.
+*   **Afișare "On-Demand":** Secțiunea de Tags este invizibilă pentru vizitatori dacă nu există etichete, păstrând interfața curată.
+*   **Ierarhie de Permisiuni:** 
+    *   *Vizitator:* Postează comentarii, dă Like, Partajează și Filtrează.
+    *   *Admin:* Singurul care poate adăuga `#tag-uri` noi sau șterge etichete, controlând astfel organizarea întregului site.
+
+### 5. Detalii Premium (Final Polish)
+*   **Format Dată Internațional:** Am adoptat standardul `2 Mar 2026 14:30`, mult mai elegant și mai clar decât formatul local cu puncte.
+*   **Incentive Input:** Câmpul de scriere are avatar neutru, glow roșu la selecție și animație de rotire a butonului de trimitere, invitând activ la conversație.
+
 ---
 *Document actualizat pe 2 Martie 2026.*

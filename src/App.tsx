@@ -45,10 +45,10 @@ export const ToastContext = createContext<{
 }>({ addToast: () => {} });
 
 export type UserRole = 'guest' | 'student' | 'admin';
-export interface User { name: string; role: UserRole; }
+export interface User { id: string; name: string; role: UserRole; }
 export const AuthContext = createContext<{
   user: User | null;
-  login: (name: string, role: UserRole) => void;
+  login: (id: string, name: string, role: UserRole) => void;
   logout: () => void;
 }>({ user: null, login: () => {}, logout: () => {} });
 
@@ -180,8 +180,8 @@ function App() {
 
   const t = useMemo(() => translations[lang] || translations['ro'], [lang]);
 
-  const login = (name: string, role: UserRole) => {
-    const newUser = { name, role };
+  const login = (id: string, name: string, role: UserRole) => {
+    const newUser = { id, name, role };
     setUser(newUser);
     localStorage.setItem('ltd_user', JSON.stringify(newUser));
   };

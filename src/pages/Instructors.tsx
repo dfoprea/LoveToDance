@@ -1,7 +1,8 @@
-import { useContext, useState, useMemo, useRef } from 'react';
+import { useContext, useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { LanguageContext } from '../App';
+import { Heart, Share2, Facebook, MessageSquare, Link as LinkIcon, X } from 'lucide-react';
+import { LanguageContext, ToastContext, AuthContext } from '../App';
 import '../App.css';
 
 // 1. SCANARE AUTOMATĂ pentru Instructori (Fixat Prod)
@@ -10,23 +11,54 @@ const instructorAssets = import.meta.glob('../../public/Storage/Instructori/**/*
 });
 
 function InstructorGallery({ teamId }: { teamId: string }) {
+  const { addToast } = useContext(ToastContext);
+  const { user } = useContext(AuthContext);
+  
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [newTag, setNewTag] = useState('');
+  
   const scrollRef = useRef<HTMLDivElement>(null);
   const animRef = useRef<number | null>(null);
   const hoverRef = useRef<number>(0);
   const [showControls, setShowControls] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
-  const media = useMemo(() => {
+  const [socialData, setSocialData] = useState<any>(() => {
+    try {
+      const saved = localStorage.getItem('ltd_social_data');
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+
+  const allMedia = useMemo(() => {
     return Object.entries(instructorAssets)
       .filter(([path]) => path.includes(teamId))
       .map(([path, module]: [string, any]) => {
         const rawUrl = typeof module === 'string' ? module : (module.default || '');
+        const finalUrl = String(rawUrl).replace('/public', '').replace('../../public', '');
         return {
-          url: String(rawUrl).replace('/public', '').replace('../../public', ''),
+          id: `instr-${teamId}-${path.split('/').pop()}`,
+          url: finalUrl,
           type: path.toLowerCase().endsWith('.mp4') ? 'video' : 'image'
         };
       });
   }, [teamId]);
+
+  // FILTRARE PRIN TAG-URI
+  const media = useMemo(() => {
+    if (!activeTag) return allMedia;
+    return allMedia.filter(item => {
+      const itemData = socialData[item.id];
+      return itemData?.tags?.includes(activeTag.toLowerCase());
+    });
+  }, [allMedia, activeTag, socialData]);
+
+  useEffect(() => { setActiveIndex(0); }, [activeTag]);
+
+  useEffect(() => {
+    localStorage.setItem('ltd_social_data', JSON.stringify(socialData));
+  }, [socialData]);
 
   // HOVER SCROLL LOGIC
   const startHoverScroll = () => {
@@ -60,78 +92,197 @@ function InstructorGallery({ teamId }: { teamId: string }) {
     }
   };
 
-  const handleVideoDoubleClick = (e: React.MouseEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget;
-    if (!document.fullscreenElement) {
-      video.requestFullscreen().catch(err => console.log(err));
-    } else {
-      document.exitFullscreen();
+  const handleLike = () => {
+    const current = media[activeIndex];
+    if (!current) return;
+    const userId = user?.id || 'guest-session';
+    const itemData = socialData[current.id] || { likes: Math.floor(Math.random() * 20) + 5, likedBy: [], tags: [] };
+    const likedBy = itemData.likedBy || [];
+    const isLiked = likedBy.includes(userId);
+    
+    const newLikedBy = isLiked ? likedBy.filter((id: string) => id !== userId) : [...likedBy, userId];
+    const newLikes = (itemData.likes || 0) + (isLiked ? -1 : 1);
+
+    setSocialData((prev: any) => ({
+      ...prev,
+      [current.id]: { ...itemData, likes: newLikes, likedBy: newLikedBy }
+    }));
+
+    if (!isLiked) addToast('❤️', 'info');
+  };
+
+  const handleAddTag = (e: React.KeyboardEvent) => {
+    const current = media[activeIndex];
+    if (e.key === 'Enter' && newTag.trim() && current) {
+      const tag = newTag.trim().toLowerCase();
+      const itemData = socialData[current.id] || { likes: 0, likedBy: [], tags: [] };
+      const currentTags = itemData.tags || [];
+      
+      if (!currentTags.includes(tag)) {
+        setSocialData((prev: any) => ({
+          ...prev,
+          [current.id]: { ...itemData, tags: [...currentTags, tag] }
+        }));
+      }
+      setNewTag('');
     }
   };
 
-  if (media.length === 0) return null;
+  const removeTag = (tagToRemove: string) => {
+    const current = media[activeIndex];
+    if (!current) return;
+    const itemData = socialData[current.id];
+    setSocialData((prev: any) => ({
+      ...prev,
+      [current.id]: { ...itemData, tags: itemData.tags.filter((t: string) => t !== tagToRemove) }
+    }));
+  };
+
+  const handleShare = (platform: string) => {
+    const current = media[activeIndex];
+    if (!current) return;
+    const shareUrl = window.location.origin + current.url;
+    const message = `Vezi acest moment cu instructorii LTD: ${shareUrl}`;
+
+    if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+    else if (platform === 'copy') { navigator.clipboard.writeText(shareUrl); addToast('Copiat!', 'success'); }
+    setShowShareMenu(false);
+  };
+
+  if (allMedia.length === 0) return null;
   const current = media[activeIndex];
+  const currentData = current ? (socialData[current.id] || { likes: 0, likedBy: [], tags: [] }) : { likes: 0, likedBy: [], tags: [] };
+  const isLikedByMe = (currentData.likedBy || []).includes(user?.id || 'guest-session');
 
   return (
     <div style={{ position: 'relative', width: '100%' }}>
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={activeIndex}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.4 }}
-          className="instructor-gallery-container"
-          onMouseEnter={() => setShowControls(true)}
-          onMouseLeave={() => setShowControls(false)}
-        >
-          {current.type === 'image' ? (
-            <img src={current.url} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Instructor" />
-          ) : (
-            <video 
-              src={current.url} 
-              autoPlay 
-              muted={!showControls} 
-              loop 
-              playsInline 
-              preload="auto" 
-              controls={showControls}
-              onDoubleClick={handleVideoDoubleClick}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }} 
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
-
-      {media.length > 1 && (
+      {/* 1. THUMBNAILS (SUS) */}
+      {allMedia.length > 1 && (
         <div 
           ref={scrollRef}
           onMouseEnter={startHoverScroll}
           onMouseMove={handleMouseMoveHover}
           onMouseLeave={stopHoverScroll}
           style={{ 
-            display: 'flex', gap: '0.5rem', marginTop: '1rem', overflowX: 'auto', 
+            display: 'flex', gap: '0.5rem', marginBottom: '1rem', overflowX: 'auto', 
             paddingBottom: '0.5rem', scrollbarWidth: 'none' 
           }}
         >
-          {media.map((m, idx) => (
-            <motion.div
-              key={idx}
-              onClick={() => setActiveIndex(idx)}
-              style={{ 
-                width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', 
-                border: `3px solid ${activeIndex === idx ? 'var(--primary)' : 'transparent'}`,
-                opacity: activeIndex === idx ? 1 : 0.6,
-                flexShrink: 0
-              }}
-            >
-              {m.type === 'image' ? (
-                <img src={m.url} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <video src={m.url + '#t=0.5'} preload="metadata" style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+          {allMedia.map((m, idx) => {
+            const isSelected = current?.url === m.url;
+            return (
+              <motion.div
+                key={idx}
+                onClick={() => {
+                  const newIdx = media.findIndex(item => item.url === m.url);
+                  if (newIdx !== -1) setActiveIndex(newIdx);
+                  else { setActiveTag(null); setTimeout(() => {
+                    const resetIdx = allMedia.findIndex(item => item.url === m.url);
+                    setActiveIndex(resetIdx);
+                  }, 10); }
+                }}
+                style={{ 
+                  width: '70px', height: '70px', borderRadius: '10px', overflow: 'hidden', cursor: 'pointer', 
+                  border: `2px solid ${isSelected ? 'var(--primary)' : 'transparent'}`,
+                  opacity: isSelected ? 1 : 0.5,
+                  flexShrink: 0
+                }}
+              >
+                {m.type === 'image' ? (
+                  <img src={m.url} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <video src={m.url + '#t=0.5'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 2. MEDIA VIEWER (MIJLOC) */}
+      <AnimatePresence mode="wait">
+        {current ? (
+          <motion.div 
+            key={current.id}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="instructor-gallery-container"
+            onMouseEnter={() => setShowControls(true)}
+            onMouseLeave={() => { setShowControls(false); setShowShareMenu(false); }}
+            style={{ position: 'relative' }}
+          >
+            <div className="media-interaction-bar" style={{ bottom: '2rem', transform: 'none', right: '1rem', gap: '1rem' }}>
+              <div className={`interaction-item ${isLikedByMe ? 'liked' : ''}`} onClick={handleLike}>
+                <div className="interaction-btn" style={{ width: '40px', height: '40px' }}><Heart size={20} fill={isLikedByMe ? "currentColor" : "none"} /></div>
+                <span className="interaction-count" style={{ fontSize: '0.65rem' }}>{currentData.likes || 0}</span>
+              </div>
+              
+              <div className="interaction-item" style={{ position: 'relative' }}>
+                <div className="interaction-btn" style={{ width: '40px', height: '40px' }} onClick={() => setShowShareMenu(!showShareMenu)}><Share2 size={20} /></div>
+                <AnimatePresence>
+                  {showShareMenu && (
+                    <motion.div className="share-menu-floating" style={{ bottom: '0', right: '50px' }} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }}>
+                      <button className="share-option" onClick={() => handleShare('whatsapp')}><MessageSquare size={16} /></button>
+                      <button className="share-option" onClick={() => handleShare('facebook')}><Facebook size={16} /></button>
+                      <button className="share-option" onClick={() => handleShare('copy')}><LinkIcon size={16} /></button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {current.type === 'image' ? (
+              <img src={current.url} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onDoubleClick={handleLike} />
+            ) : (
+              <video src={current.url} autoPlay muted={!showControls} loop playsInline preload="auto" controls={showControls} onDoubleClick={handleLike} style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }} />
+            )}
+          </motion.div>
+        ) : (
+          <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)', borderRadius: '24px' }}>
+            <button onClick={() => setActiveTag(null)} className="btn-secondary">Resetare Filtru Tag</button>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 3. TAGS SECTION (JOS) - Apare doar dacă există activitate sau ești Admin */}
+      {(activeTag || (currentData.tags && currentData.tags.length > 0) || user?.role === 'admin') && (
+        <div className="tags-column" style={{ width: '100%', marginTop: '1.5rem', background: 'transparent', padding: 0, border: 'none' }}>
+          
+          {/* Titlul apare doar dacă avem ce filtra */}
+          {(activeTag || (currentData.tags && currentData.tags.length > 0)) && (
+            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.8rem', textTransform: 'uppercase', textAlign: 'left' }}>
+              Tags
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+            {activeTag && (
+              <span className="tag-pill" onClick={() => setActiveTag(null)} style={{ background: 'var(--primary)', color: '#fff' }}>
+                Filtru: #{activeTag} <X size={12} />
+              </span>
+            )}
+            {currentData.tags?.map((tag: string) => (
+              <span key={tag} className="tag-pill" onClick={() => setActiveTag(tag)}>
+                #{tag} 
+                {user?.role === 'admin' && (
+                  <span onClick={(e) => { e.stopPropagation(); removeTag(tag); }} style={{ marginLeft: '0.3rem', opacity: 0.5 }}>×</span>
+                )}
+              </span>
+            ))}
+          </div>
+
+          {user?.role === 'admin' && current && (
+            <div style={{ marginTop: currentData.tags?.length > 0 ? '0' : '0.5rem' }}>
+              <input 
+                type="text" placeholder="Adaugă #tag instructor..." value={newTag} 
+                onChange={e => setNewTag(e.target.value)} onKeyDown={handleAddTag} 
+                className="social-input" style={{ maxWidth: '200px', fontSize: '0.75rem', padding: '0.5rem 0.8rem', borderRadius: '15px' }} 
+              />
+              {(!currentData.tags || currentData.tags.length === 0) && (
+                <div style={{ fontSize: '0.65rem', opacity: 0.4, marginTop: '0.4rem' }}>Niciun tag. Adaugă unul ca Admin.</div>
               )}
-            </motion.div>
-          ))}
+            </div>
+          )}
         </div>
       )}
     </div>

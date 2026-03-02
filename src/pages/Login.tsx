@@ -17,12 +17,13 @@ function Login() {
     
     // LOGICA DE ACCES
     if (email === 'admin' && pass === 'admin') {
-      login('Corina', 'admin');
+      login('admin-id', 'Corina', 'admin');
       addToast('Bine ai revenit, Corina! Panoul de administrare este activ.', 'success');
       navigate('/dashboard');
     } else {
       // Simulam un student pentru orice alt input
-      login(email.split('@')[0], 'student');
+      const studentId = `std-${Date.now()}`;
+      login(studentId, email.split('@')[0], 'student');
       addToast(`Bun venit la cursuri, ${email.split('@')[0]}!`, 'success');
       navigate('/');
     }

@@ -1,9 +1,9 @@
-import { useContext, useEffect, useRef, useMemo } from 'react';
+import { useContext, useEffect, useRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Heart, Users, Star, ArrowRight, Play, Camera, Share2 } from 'lucide-react';
-import { LanguageContext } from '../App';
+import { Heart, Users, Star, ArrowRight, Play, Camera, Share2, Facebook, MessageSquare, Link as LinkIcon } from 'lucide-react';
+import { LanguageContext, ToastContext, AuthContext } from '../App';
 import '../App.css';
 
 // 1. SCANARE AUTOMATĂ pentru Home (Fixat pentru Prod)
@@ -13,8 +13,61 @@ const homeAssets = import.meta.glob('../../public/Storage/Acasa/**/*.{mp4,jpg,jp
 
 function Home() {
   const { t } = useContext(LanguageContext);
+  const { addToast } = useContext(ToastContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+
+  const [socialData, setSocialData] = useState<any>(() => {
+    try {
+      const saved = localStorage.getItem('ltd_social_data');
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('ltd_social_data', JSON.stringify(socialData));
+  }, [socialData]);
+
+  const heroVideoId = 'hero-main-video';
+  const heroData = socialData[heroVideoId] || { likes: 154, likedBy: [] };
+  const isLikedByMe = (heroData.likedBy || []).includes(user?.id || 'guest-session');
+
+  const handleLike = () => {
+    const userId = user?.id || 'guest-session';
+    const likedBy = heroData.likedBy || [];
+    const isLiked = likedBy.includes(userId);
+
+    const newLikedBy = isLiked ? likedBy.filter((id: string) => id !== userId) : [...likedBy, userId];
+    const newLikes = (heroData.likes || 0) + (isLiked ? -1 : 1);
+
+    setSocialData((prev: any) => ({
+      ...prev,
+      [heroVideoId]: { ...heroData, likes: newLikes, likedBy: newLikedBy }
+    }));
+
+    if (!isLiked) addToast('❤️ Bucuroși că îți place!', 'info');
+  };
+
+  const handleShare = (platform: string) => {
+    const shareUrl = window.location.origin;
+    const message = `Vino și tu la Love2Dance! Vezi atmosfera de aici: ${shareUrl}`;
+
+    switch (platform) {
+      case 'whatsapp':
+        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        break;
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(shareUrl);
+        addToast('Link site copiat! ✅', 'success');
+        break;
+    }
+    setShowShareMenu(false);
+  };
 
   // Extragem imaginile pentru casetele de incepatori (Fixat pentru Prod)
   const featureImages = useMemo(() => {
@@ -68,20 +121,56 @@ function Home() {
           playsInline
           autoPlay
           className="hero-video"
+          onDoubleClick={handleLike}
           style={{
-            pointerEvents: 'none',
+            pointerEvents: 'auto',
             objectFit: 'cover',
             objectPosition: 'center 30%',
             width: '100vw',
             height: '90vh',
             zIndex: 1,
-            opacity: 0.85
+            opacity: 0.85,
+            cursor: 'pointer'
           }}
         >
           <source src="/Storage/Acasa/videos/hero_bg.mp4" type="video/mp4" />
         </video>
-        <div className="hero-overlay" style={{ zIndex: 2, background: 'rgba(0, 0, 0, 0.5)' }}></div>
-        <div className="hero-content" style={{ zIndex: 10, position: 'relative', marginTop: '-5vh' }}>          <motion.span 
+
+        {/* HERO INTERACTION BAR */}
+        <div className="media-interaction-bar" style={{ zIndex: 20, right: '2rem' }}>
+          <div className={`interaction-item ${isLikedByMe ? 'liked' : ''}`} onClick={handleLike}>
+            <div className="interaction-btn">
+              <Heart size={24} fill={isLikedByMe ? "currentColor" : "none"} />
+            </div>
+            <span className="interaction-count">{heroData.likes || 0}</span>
+          </div>
+
+          <div className="interaction-item" style={{ position: 'relative' }}>
+            <div className="interaction-btn" onClick={() => setShowShareMenu(!showShareMenu)}>
+              <Share2 size={24} />
+            </div>
+            <span className="interaction-count">Share</span>
+            <AnimatePresence>
+              {showShareMenu && (
+                <motion.div 
+                  className="share-menu-floating"
+                  style={{ bottom: '0', right: '60px' }}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                >
+                  <button className="share-option" onClick={() => handleShare('whatsapp')} title="WhatsApp"><MessageSquare size={18} /></button>
+                  <button className="share-option" onClick={() => handleShare('facebook')} title="Facebook"><Facebook size={18} /></button>
+                  <button className="share-option" onClick={() => handleShare('copy')} title="Copy Link"><LinkIcon size={18} /></button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div className="hero-overlay" style={{ zIndex: 2, background: 'rgba(0, 0, 0, 0.5)', pointerEvents: 'none' }}></div>
+        <div className="hero-content" style={{ zIndex: 10, position: 'relative', marginTop: '-5vh', pointerEvents: 'none' }}>
+          <motion.span 
             className="hero-accent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +197,7 @@ function Home() {
           </motion.p>
           <motion.div 
             className="cta-group" 
-            style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}
+            style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', pointerEvents: 'auto' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
