@@ -1,7 +1,8 @@
-import { useContext, useState, useEffect, useMemo } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { LanguageContext, Logo, ToastContext, AuthContext } from '../App';
-import { Heart, MessageCircle, Tag, Palette, FileText, Video, Trash2, Save, RotateCcw, Search, ChevronRight } from 'lucide-react';
+import { MessageCircle, Tag, Palette, FileText, Video, Trash2, RotateCcw } from 'lucide-react';
 import '../App.css';
 
 function Dashboard() {

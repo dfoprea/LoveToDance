@@ -186,7 +186,7 @@ function App() {
     
     try {
       const parsed = JSON.parse(overrides);
-      const merged = { ...base };
+      const merged = { ...base } as any; // Cast pentru indexare dinamica
       Object.keys(parsed).forEach(section => {
         merged[section] = { ...merged[section], ...parsed[section] };
       });
