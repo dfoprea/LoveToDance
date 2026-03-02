@@ -1,10 +1,11 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { LanguageContext, ToastContext } from '../App';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
+import { ToastContext } from '../App';
 import '../App.css';
 
 function Checkout() {
-  const { t } = useContext(LanguageContext);
   const { addToast } = useContext(ToastContext);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -21,15 +22,44 @@ function Checkout() {
     setTimeout(() => navigate('/dashboard'), 2000);
   };
 
+  const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
+  const scaleUp: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
+  const staggerContainer: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 }
+    }
+  };
+
   return (
-    <div className="page-container fade-in">
-      <div className="checkout-grid">
+    <motion.div 
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div 
+        className="checkout-grid"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
         
         {/* LEFT: ORDER SUMMARY */}
-        <div>
+        <motion.div variants={fadeInUp}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '2rem' }}>Finalizare Înscriere</h2>
           
-          <div className="feature-card" style={{ padding: '2rem' }}>
+          <motion.div className="feature-card" variants={scaleUp} style={{ padding: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--primary)', marginBottom: '0.2rem' }}>Pachet Ales</div>
@@ -56,28 +86,28 @@ function Checkout() {
                 <span>{price} RON</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(16, 185, 129, 0.05)', border: '1px dashed #10b981', borderRadius: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <motion.div variants={fadeInUp} style={{ marginTop: '2rem', padding: '1rem', background: 'rgba(16, 185, 129, 0.05)', border: '1px dashed #10b981', borderRadius: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span>🔒</span>
             <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>Conexiune securizată SSL.</span>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* RIGHT: PAYMENT FORM */}
-        <div className="feature-card" style={{ padding: '2.5rem' }}>
+        <motion.div className="feature-card" variants={fadeInUp} style={{ padding: '2.5rem' }}>
           <h3 style={{ marginBottom: '2rem' }}>Informații Plată</h3>
           
           <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
-            <button onClick={() => setPaymentMethod('card')} className="action-btn-box" style={{ flex: 1, border: paymentMethod === 'card' ? '2px solid var(--primary)' : '1px solid var(--border)', background: paymentMethod === 'card' ? 'rgba(155,28,28,0.05)' : 'transparent', justifyContent: 'center' }}>💳 Card</button>
-            <button onClick={() => setPaymentMethod('paypal')} className="action-btn-box" style={{ flex: 1, border: paymentMethod === 'paypal' ? '2px solid var(--primary)' : '1px solid var(--border)', background: paymentMethod === 'paypal' ? 'rgba(155,28,28,0.05)' : 'transparent', justifyContent: 'center' }}>🅿️ PayPal</button>
-            <button onClick={() => setPaymentMethod('cash')} className="action-btn-box" style={{ flex: 1, border: paymentMethod === 'cash' ? '2px solid var(--primary)' : '1px solid var(--border)', background: paymentMethod === 'cash' ? 'rgba(155,28,28,0.05)' : 'transparent', justifyContent: 'center' }}>💵 Cash</button>
+            <motion.button whileTap={{ scale: 0.95 }} onClick={() => setPaymentMethod('card')} className="action-btn-box" style={{ flex: 1, border: paymentMethod === 'card' ? '2px solid var(--primary)' : '1px solid var(--border)', background: paymentMethod === 'card' ? 'rgba(155,28,28,0.05)' : 'transparent', justifyContent: 'center' }}>💳 Card</motion.button>
+            <motion.button whileTap={{ scale: 0.95 }} onClick={() => setPaymentMethod('paypal')} className="action-btn-box" style={{ flex: 1, border: paymentMethod === 'paypal' ? '2px solid var(--primary)' : '1px solid var(--border)', background: paymentMethod === 'paypal' ? 'rgba(155,28,28,0.05)' : 'transparent', justifyContent: 'center' }}>🅿️ PayPal</motion.button>
+            <motion.button whileTap={{ scale: 0.95 }} onClick={() => setPaymentMethod('cash')} className="action-btn-box" style={{ flex: 1, border: paymentMethod === 'cash' ? '2px solid var(--primary)' : '1px solid var(--border)', background: paymentMethod === 'cash' ? 'rgba(155,28,28,0.05)' : 'transparent', justifyContent: 'center' }}>💵 Cash</motion.button>
           </div>
 
           <form onSubmit={handlePay} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {paymentMethod === 'card' && (
-              <>
-                <div>
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
+                <div style={{ marginBottom: '1.25rem' }}>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Număr Card</label>
                   <input required type="text" placeholder="0000 0000 0000 0000" className="social-input" style={{ fontSize: '1.1rem', letterSpacing: '0.1em' }} />
                 </div>
@@ -93,25 +123,25 @@ function Checkout() {
                     </label>
                     <input required type="password" placeholder="***" className="social-input" maxLength={3} />
                     {showCVVHelp && (
-                      <div style={{ position: 'absolute', top: '-60px', right: 0, background: '#333', color: '#fff', padding: '0.5rem', borderRadius: '8px', fontSize: '0.7rem', width: '150px', zIndex: 10, boxShadow: '0 5px 15px rgba(0,0,0,0.3)' }}>
+                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ position: 'absolute', top: '-60px', right: 0, background: '#333', color: '#fff', padding: '0.5rem', borderRadius: '8px', fontSize: '0.7rem', width: '150px', zIndex: 10, boxShadow: '0 5px 15px rgba(0,0,0,0.3)' }}>
                         Cele 3 cifre de pe spatele cardului tău.
-                      </div>
+                      </motion.div>
                     )}
                   </div>
                 </div>
-              </>
+              </motion.div>
             )}
 
             {paymentMethod === 'paypal' && (
-              <div style={{ textAlign: 'center', padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--border)' }}>
                 <p>Vei fi redirecționat către PayPal.</p>
-              </div>
+              </motion.div>
             )}
 
             {paymentMethod === 'cash' && (
-              <div style={{ padding: '1.5rem', background: 'rgba(155,28,28,0.05)', borderRadius: '12px', border: '1px solid var(--primary)' }}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: '1.5rem', background: 'rgba(155,28,28,0.05)', borderRadius: '12px', border: '1px solid var(--primary)' }}>
                 <p style={{ margin: 0, fontWeight: 700 }}>Achită direct la recepție (Cash sau Revolut).</p>
-              </div>
+              </motion.div>
             )}
 
             <div style={{ marginTop: '1rem' }}>
@@ -119,14 +149,19 @@ function Checkout() {
               <input required type="text" placeholder="NUME PRENUME" className="social-input" />
             </div>
 
-            <button type="submit" className="btn-primary-full" style={{ marginTop: '1rem', padding: '1.2rem' }}>
+            <motion.button 
+              type="submit" 
+              className="btn-primary-full btn-glow" 
+              style={{ marginTop: '1rem', padding: '1.2rem' }}
+              whileTap={{ scale: 0.98 }}
+            >
               {paymentMethod === 'cash' ? 'RESERVĂ ACUM' : 'PLĂTEȘTE ÎN SIGURANȚĂ'}
-            </button>
+            </motion.button>
           </form>
-        </div>
+        </motion.div>
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

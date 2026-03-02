@@ -1,14 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { motion } from 'framer-motion';
 import { LanguageContext } from '../App';
 import '../App.css';
 
 function FAQ() {
   const { t } = useContext(LanguageContext);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  // Folosim datele din i18n sau fallback la RO dacă lipsesc traducerile specifice
   const faqData = [
     {
-      category: t.ro ? "Logistică și Participare" : "Logistics & Participation", // Fallback simplu pentru categorii daca nu sunt in i18n
+      category: t.ro ? "Logistică și Participare" : "Logistics & Participation",
       items: [
         {
           q: "Am nevoie de partener pentru cursurile de dans?",
@@ -60,30 +61,52 @@ function FAQ() {
     }
   ];
 
-  // Mapăm întrebările la traducerile din i18n dacă există, altfel rămân cele de mai sus
-  // Pentru moment, deoarece avem nevoie de viteză, voi lăsa FAQ-ul să folosească obiectul t.faq
-  // Dar pentru a fi 100% sigur că merge butonul, voi face componenta să reacționeze la `t`
-
   return (
-    <div className="page-container fade-in">
+    <motion.div 
+      className="page-container fade-in"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      style={{ padding: '4rem 2rem', maxWidth: '900px', margin: '0 auto' }}
+    >
       <div className="page-header" style={{ textAlign: 'center', marginBottom: '4rem' }}>
         <h1 className="page-title">{t.faq.title}</h1>
         <p className="page-subtitle" style={{ maxWidth: '800px', margin: '0 auto' }}>{t.faq.subtitle}</p>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-        {faqData.map((section, idx) => (
-          <div key={idx} className="faq-section">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+        {faqData.map((section, sIdx) => (
+          <div key={sIdx} className="faq-section">
             <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '2rem', color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>
               {section.category}
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              {section.items.map((item, i) => (
-                <div key={i} className="feature-card" style={{ padding: '2rem', border: '1px solid var(--border)', background: 'var(--bg-card)' }}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '1rem' }}>{item.q}</h3>
-                  <p style={{ fontSize: '1rem', lineHeight: '1.6', color: 'var(--text-muted)' }}>{item.a}</p>
-                </div>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {section.items.map((item, i) => {
+                const globalIndex = sIdx * 100 + i;
+                const isOpen = openIndex === globalIndex;
+                
+                return (
+                  <motion.div 
+                    key={i} 
+                    className="feature-card" 
+                    style={{ padding: 0, border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}
+                  >
+                    <button 
+                      onClick={() => setOpenIndex(isOpen ? null : globalIndex)}
+                      style={{ width: '100%', textAlign: 'left', padding: '1.5rem', background: 'transparent', border: 'none', color: 'var(--text-main)', fontSize: '1.1rem', fontWeight: 700, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    >
+                      {item.q}
+                      <span style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s ease', color: 'var(--primary)' }}>▼</span>
+                    </button>
+                    {isOpen && (
+                      <div style={{ padding: '0 1.5rem 1.5rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                        {item.a}
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -92,11 +115,15 @@ function FAQ() {
       <div style={{ marginTop: '6rem', textAlign: 'center' }}>
         <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>{t.faq.contactTitle}</h3>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>{t.faq.contactDesc}</p>
-        <button className="btn-primary-full" style={{ maxWidth: '250px' }} onClick={() => window.location.href = 'mailto:corina@lovetodance.ro'}>
+        <motion.button 
+          className="btn-primary-full" 
+          style={{ maxWidth: '250px' }} 
+          onClick={() => window.location.href = 'mailto:corina@lovetodance.ro'}
+        >
           {t.faq.btnContact}
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

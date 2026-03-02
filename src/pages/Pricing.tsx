@@ -1,5 +1,7 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { LanguageContext } from '../App';
 import '../App.css';
 
@@ -28,17 +30,46 @@ function Pricing() {
     </div>
   );
 
+  const staggerContainer: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 }
+    }
+  };
+
+  const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
+  const scaleUp: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
   return (
-    <div className="page-container fade-in">
-      <div className="page-header" style={{ textAlign: 'center', marginBottom: '4rem' }}>
+    <motion.div 
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div className="page-header" style={{ textAlign: 'center', marginBottom: '4rem' }} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="page-title">{t.pricing.title}</h1>
         <p className="page-subtitle">{t.pricing.subtitle}</p>
-      </div>
+      </motion.div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}>
+      <motion.div 
+        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
         
         {/* Salsa & Bachata Card */}
-        <div className="pricing-card" style={{ textAlign: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '3rem 2.5rem' }}>
+        <motion.div variants={scaleUp} className="pricing-card" style={{ textAlign: 'center', border: '1px solid var(--border)', padding: '3rem 2.5rem', borderRadius: 'var(--radius-card)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
           <h3 className="plan-name" style={{ fontSize: '1.5rem' }}>{t.pricing.salsaTitle}</h3>
           
           <PriceDisplay amount="220" />
@@ -55,13 +86,13 @@ function Pricing() {
             </ul>
           </div>
 
-          <button className="btn-primary-full" onClick={() => handleCheckout(t.pricing.salsaTitle, '220')}>
+          <button className="btn-primary-full btn-glow" onClick={() => handleCheckout(t.pricing.salsaTitle, '220')}>
             {t.pricing.btnEnroll}
           </button>
-        </div>
+        </motion.div>
 
         {/* Kizomba Card */}
-        <div className="pricing-card" style={{ textAlign: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '3rem 2.5rem' }}>
+        <motion.div variants={scaleUp} className="pricing-card" style={{ textAlign: 'center', border: '1px solid var(--border)', padding: '3rem 2.5rem', borderRadius: 'var(--radius-card)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
           <h3 className="plan-name" style={{ fontSize: '1.5rem' }}>{t.pricing.kizombaTitle}</h3>
           
           <PriceDisplay amount="250" />
@@ -78,18 +109,18 @@ function Pricing() {
             </ul>
           </div>
 
-          <button className="btn-primary-full" onClick={() => handleCheckout(t.pricing.kizombaTitle, '250')}>
+          <button className="btn-primary-full btn-glow" onClick={() => handleCheckout(t.pricing.kizombaTitle, '250')}>
             {t.pricing.btnEnroll}
           </button>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
       
-      <div style={{ marginTop: '5rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', padding: '0 2rem' }}>
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible" style={{ marginTop: '5rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', padding: '0 2rem' }}>
         <p>{t.pricing.freeTrial}</p>
         <p style={{ marginTop: '0.5rem' }}>{t.pricing.paymentInfo}</p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

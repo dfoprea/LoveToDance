@@ -85,7 +85,14 @@ Acest document conține istoricul funcționalităților implementate în platfor
 * **Implementare:** Fixare căi media relative, logică de extragere URL-uri din module Vite și fișier `_redirects` pentru SPA.
 * **Motiv/Utilitate:** Asigură funcționarea perfectă pe Netlify fără ecrane albe sau crash-uri JavaScript.
 
-## 21. Optimizare Responsivă Galerie (Mobile-First Layout)
+## 21. Fluiditatea vizuală cu ajutorul bibliotecilor proaspăt instalate (framer-motion și lucide-react)
+* **Implementare:** 
+    * **Animații de Intrare:** Integrarea `framer-motion` pentru a anima apariția elementelor pe pagină (fade-in, slide-up). Paginile care anterior erau statice au acum o tranziție lină la încărcare.
+    * **Sistem de Iconițe Modern:** Utilizarea `lucide-react` pentru o bibliotecă de iconițe vectorială, consistentă și performantă, înlocuind elementele grafice vechi.
+    * **Feedback Tactil (Hover):** Implementarea unor efecte de hover rafinate (glow subtil și schimbarea culorii bordurii) care oferă utilizatorului confirmarea vizuală a interacțiunii fără a altera structura sau poziția elementelor.
+* **Motiv/Utilitate:** Crește calitatea percepută a platformei. Mișcările fluide fac site-ul să se simtă "viu" și premium, reducând rata de respingere (bounce rate) și oferind o experiență utilizator demnă de o școală de dans modernă.
+
+## 22. Optimizare Responsivă Galerie (Mobile-First Layout)
 * **Implementare:** Corecție de layout folosind Media Queries pentru a trece de la structura de tip "Side-by-Side" (Desktop) la "Stacked" (Mobile). Am setat un `aspect-ratio: 9/16` specific pentru mobil pentru a acomoda videourile verticale (format TikTok).
 * **Motiv/Utilitate:** Asigură vizibilitatea corectă a zonei video pe telefoane. Anterior, panoul social (tag-uri/comentarii) împingea conținutul media în afara ecranului. Acum experiența este fluidă și adaptată consumului de conținut video pe verticală.
 
@@ -147,5 +154,12 @@ Acest document conține istoricul funcționalităților implementate în platfor
     * **Gestiune Resurse:** Reducerea dimensiunii proiectului prin eliminarea selectivă a fișierelor video de peste 10MB, asigurând un timp de upload și încărcare optim.
 * **Motiv/Utilitate:** Asigură prezența online continuă a școlii și o navigare tehnică corectă pe orice pagină (Galerie, FAQ etc.), indiferent de punctul de intrare al utilizatorului.
 
+## 29. Rafinamente UI/UX, Reparații de Navigație și Animații Fluide
+* **Implementare:** 
+    * **Navigație Orizontală Centralizată:** Refacerea meniului principal de pe desktop (Header) prin eliminarea completă a scroll-ului orizontal inestetic, ajustarea flexbox-ului, a fonturilor și a padding-urilor pentru a asigura vizibilitatea integrală a tuturor link-urilor (inclusiv "Combinații" și "Galerie") pe un singur rând, indiferent de rezoluție.
+    * **Reparații Video Playback:** Fixarea conflictului de evenimente (dublu-click de play/pause) pe materialele video din paginile **Galerie** și **Instructori**. Acum, click-ul pe zona video nu mai interferează cu controalele native ale browserului, asigurând o redare corectă și fără întreruperi.
+    * **Animații de Interfață (Framer Motion):** Integrarea unor animații subtile, profesionale, pe paginile statice (**Cursuri**, **Combinații**, **FAQ** și **Program**). Cardurile au acum efecte soft de tip "Hover" (ridicare ușoară și accentuare a umbrei), iar la încărcarea paginii elementele apar lin prin efecte de `fadeInUp`. S-a renunțat la animațiile lente sau intruzive (ex. "stagger") la cererea expresă, pentru a menține aplicația "snappy" și rapidă.
+* **Motiv/Utilitate:** Un UI "pixel-perfect" și un UX intuitiv sporesc substanțial încrederea utilizatorilor. Meniul perfect vizibil previne frustrarea, redarea video corectă asigură consumul de conținut fără erori, iar animațiile din `framer-motion` transformă paginile altfel statice într-o experiență premium, modernă, demnă de o școală de dans de top.
+
 ---
-*Document actualizat pe 28 Februarie 2026.*
+*Document actualizat pe 2 Martie 2026.*

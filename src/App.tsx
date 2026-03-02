@@ -93,7 +93,7 @@ function Navigation() {
         </Link>
       </div>
       
-      <nav className="nav-links">
+      <nav className="nav-links" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
         <Link to="/" className={location.pathname === '/' ? 'active' : ''}>{t.nav.home}</Link>
         <Link to="/instructors" className={location.pathname === '/instructors' ? 'active' : ''}>{t.nav.instructors}</Link>
         <Link to="/features" className={location.pathname === '/features' ? 'active' : ''}>{t.nav.classes}</Link>

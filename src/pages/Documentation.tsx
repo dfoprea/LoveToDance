@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { motion } from 'framer-motion';
 import { LanguageContext } from '../App';
 import '../App.css';
 
@@ -6,8 +7,14 @@ function Documentation() {
   const { t } = useContext(LanguageContext);
 
   return (
-    <div className="page-container fade-in">
-      <div className="page-header" style={{ marginBottom: '5rem' }}>
+    <motion.div 
+      className="page-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="page-header" style={{ marginBottom: '5rem', textAlign: 'center' }}>
         <h1 className="page-title">{t.schedulePage.title}</h1>
         <p className="page-subtitle" style={{ fontSize: '1.4rem' }}>{t.schedulePage.subtitle}</p>
       </div>
@@ -15,7 +22,7 @@ function Documentation() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
         
         {/* Weekly Schedule Table */}
-        <div className="program-table-card">
+        <motion.div className="program-table-card" style={{ transition: 'box-shadow 0.3s ease' }}>
           <div className="program-table-header">
             <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900 }}>{t.scheduleTitle || 'PROGRAM'}</h2>
           </div>
@@ -51,31 +58,35 @@ function Documentation() {
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
 
         {/* Location & Info */}
         <div className="responsive-grid">
-          <div className="feature-card">
+          <motion.div className="feature-card" style={{ transition: 'all 0.3s ease' }}>
             <h3>📍 {t.footer.contact}</h3>
             <p>Splaiul Unirii 162, București.</p>
             <p>Metrou Timpuri Noi.</p>
-          </div>
-          <div className="feature-card">
+          </motion.div>
+          <motion.div className="feature-card" style={{ transition: 'all 0.3s ease' }}>
             <h3>📞 Call</h3>
             <p>0721 915 169 (Corina)</p>
-          </div>
+          </motion.div>
         </div>
 
       </div>
 
       {/* Banner decorativ inainte de footer */}
-      <section className="final-cta-section" style={{ marginTop: '6rem', borderRadius: '30px', height: '300px' }}>
+      <motion.section 
+        whileHover={{ scale: 1.01 }}
+        className="final-cta-section" 
+        style={{ marginTop: '6rem', borderRadius: '30px', height: '300px' }}
+      >
         <div className="final-cta-overlay" style={{ borderRadius: '30px' }}></div>
         <div className="final-cta-content">
           <h2 style={{ fontSize: '2rem', fontWeight: 900 }}>Pasiune prin dans la fiecare pas.</h2>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }
 

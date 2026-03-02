@@ -70,7 +70,7 @@ export const translations = {
     checkout: { title: 'Finalizare Înscriere', planLabel: 'Pachet Ales', total: 'Total de plată', btnPay: 'PLĂTEȘTE ÎN SIGURANȚĂ', btnReserve: 'RESERVĂ ACUM' },
     contactPage: { title: 'Contactează-ne', name: 'Numele tău', email: 'Email/Tel', message: 'Mesaj', btn: 'Trimite' },
     gallery: { title: 'Momente LTD', subtitle: 'Vezi atmosfera noastră!', filterAll: 'Toate' },
-    footer: { tagline: 'LovetoDance - Pasiune prin dans.', product: 'Cursuri', company: 'Scoala', contact: 'Contact', legal: 'Legal', rights: '2026 LovetoDance.ro' }
+    footer: { tagline: 'LovetoDance - Pasiune prin dans.', product: 'Cursuri', company: 'Scoala', contact: 'Contact', legal: 'Legal', privacy: 'Confidențialitate', terms: 'Termeni', rights: '2026 LovetoDance.ro' }
   },
   en: {
     nav: {
@@ -141,7 +141,7 @@ export const translations = {
     checkout: { title: 'Checkout', planLabel: 'Selected Plan', total: 'Total', btnPay: 'SECURE PAYMENT', btnReserve: 'RESERVE NOW' },
     contactPage: { title: 'Contact Us', name: 'Name', email: 'Email/Tel', message: 'Message', btn: 'Send' },
     gallery: { title: 'LTD Moments', subtitle: 'See our vibe!', filterAll: 'All' },
-    footer: { tagline: 'LovetoDance - Passion through dance.', product: 'Classes', company: 'School', contact: 'Contact', legal: 'Legal', rights: '2026 LovetoDance.ro' }
+    footer: { tagline: 'LovetoDance - Passion through dance.', product: 'Classes', company: 'School', contact: 'Contact', legal: 'Legal', privacy: 'Privacy', terms: 'Terms', rights: '2026 LovetoDance.ro' }
   },
   de: {
     nav: {
@@ -212,7 +212,7 @@ export const translations = {
     checkout: { title: 'Kasse', planLabel: 'Gewähltes Abo', total: 'Gesamt', btnPay: 'SICHER BEZAHLEN', btnReserve: 'JETZT RESERVIEREN' },
     contactPage: { title: 'Kontakt', name: 'Name', email: 'E-Mail/Tel', message: 'Nachricht', btn: 'Senden' },
     gallery: { title: 'LTD Momente', subtitle: 'Unsere Atmosphäre!', filterAll: 'Alle' },
-    footer: { tagline: 'LovetoDance - Leidenschaft durch Tanz.', product: 'Kurse', company: 'Schule', contact: 'Kontakt', legal: 'Rechtliches', rights: '2026 LovetoDance.ro' }
+    footer: { tagline: 'LovetoDance - Leidenschaft durch Tanz.', product: 'Kurse', company: 'Schule', contact: 'Kontakt', legal: 'Rechtliches', privacy: 'Datenschutz', terms: 'Bedingungen', rights: '2026 LovetoDance.ro' }
   },
   fr: {
     nav: {
@@ -283,6 +283,6 @@ export const translations = {
     checkout: { title: 'Paiement', planLabel: 'Forfait Choisi', total: 'Total', btnPay: 'PAYER EN SÉCURITÉ', btnReserve: 'RÉSERVER MAINTENANT' },
     contactPage: { title: 'Contact', name: 'Nom', email: 'Email/Tél', message: 'Message', btn: 'Envoyer' },
     gallery: { title: 'Moments LTD', subtitle: 'Découvrez notre ambiance !', filterAll: 'Tous' },
-    footer: { tagline: 'LovetoDance - La passion par la danse.', product: 'Cours', company: 'Ecole', contact: 'Contact', legal: 'Légal', rights: '2026 LovetoDance.ro' }
+    footer: { tagline: 'LovetoDance - La passion par la danse.', product: 'Cours', company: 'Ecole', contact: 'Contact', legal: 'Légal', privacy: 'Confidentialité', terms: 'Conditions', rights: '2026 LovetoDance.ro' }
   }
 };
