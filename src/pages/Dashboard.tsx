@@ -358,7 +358,7 @@ function Dashboard() {
         <aside style={{ width: '250px', position: 'sticky', top: '100px', background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
           <div style={{ transform: 'scale(0.8)', transformOrigin: 'left' }}><Logo size={40} /></div>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '1.5rem' }}>
-            <NavBtn active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics'} icon={<BarChart3 size={18}/>} label={t.dashboard.tabAnalytics} />
+            <NavBtn active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<BarChart3 size={18}/>} label={t.dashboard.tabAnalytics} />
             <NavBtn active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users size={18}/>} label={t.dashboard.tabCommunity} />
             <NavBtn active={activeTab === 'social'} onClick={() => setActiveTab('social')} icon={<MessageCircle size={18}/>} label={t.dashboard.tabModeration} />
             <NavBtn active={activeTab === 'content'} onClick={() => setActiveTab('content')} icon={<FileText size={18}/>} label={t.dashboard.tabCMS} />
