@@ -64,8 +64,8 @@ function Dashboard() {
     const type = e.dataTransfer.getData('type');
     const value = e.dataTransfer.getData('value');
     
-    if (axis === 'y' && type !== 'metric') { addToast('Axa Y acceptă doar Metrici (Cantități)!', 'error'); return; }
-    if ((axis === 'x' || axis === 'z') && type !== 'dimension' && value !== 'none') { addToast(`Axa ${axis.toUpperCase()} acceptă doar Dimensiuni de grupare!`, 'error'); return; }
+    if (axis === 'y' && type !== 'metric') { addToast('Axa Y acceptă doar Metrici!', 'error'); return; }
+    if ((axis === 'x' || axis === 'z') && type !== 'dimension' && value !== 'none') { addToast(`Axa ${axis.toUpperCase()} acceptă doar Dimensiuni!`, 'error'); return; }
 
     setCustomChart(prev => ({ ...prev, [axis]: value }));
   };
@@ -130,7 +130,7 @@ function Dashboard() {
     };
     setSocialData(mockData);
     localStorage.setItem('ltd_social_data', JSON.stringify(mockData));
-    addToast('Date masive de test generate!', 'success');
+    addToast(t.dashboard.mockDataSuccess, 'success');
   };
 
   const analytics = useMemo(() => {
@@ -259,7 +259,7 @@ function Dashboard() {
   const deleteComment = (mediaId: string, idx: number) => {
     const newData = { ...socialData };
     newData[mediaId].comments.splice(idx, 1);
-    setSocialData(newData);
+    setSocialData({ ...newData });
     localStorage.setItem('ltd_social_data', JSON.stringify(newData));
   };
 
@@ -267,7 +267,7 @@ function Dashboard() {
     const newData = { ...socialData };
     const tags = newData[id]?.tags || [];
     newData[id] = { ...newData[id], tags: tags.includes('hidden') ? tags.filter((t:any) => t !== 'hidden') : [...tags, 'hidden'] };
-    setSocialData(newData);
+    setSocialData({ ...newData });
     localStorage.setItem('ltd_social_data', JSON.stringify(newData));
   };
 
@@ -286,7 +286,7 @@ function Dashboard() {
     setThemeConfig(defaultConfig);
     const root = document.documentElement;
     ['primary', 'secondary', 'bg-dark', 'bg-card', 'text-main', 'text-muted', 'radius-btn', 'radius-card'].forEach(p => root.style.removeProperty(`--${p}`));
-    addToast('Tema a fost resetată cu succes!', 'success');
+    addToast(t.dashboard.saveSuccess, 'success');
   };
 
   const saveText = (section: string, key: string, value: string) => {
@@ -295,10 +295,18 @@ function Dashboard() {
     newOverrides[section][key] = value;
     setEditingTexts(newOverrides);
     localStorage.setItem(`ltd_texts_override_${lang}`, JSON.stringify(newOverrides));
-    addToast('Salvat!', 'success');
+    addToast(t.dashboard.saveSuccess, 'success');
   };
 
-  const axisLabels: any = { likes: 'Aprecieri', comments: 'Comentarii', engagement: 'Engagement Total', date: 'Timeline', category: 'Stil Dans', tags: 'Tag-uri', none: 'Fără Grupare' };
+  const axisLabels: any = { 
+    likes: t.dashboard.metricLikes, 
+    comments: t.dashboard.metricComments, 
+    engagement: t.dashboard.metricEngagement, 
+    date: t.dashboard.dimTimeline, 
+    category: t.dashboard.dimStyles, 
+    tags: t.dashboard.dimTags, 
+    none: t.dashboard.dimNone 
+  };
 
   if (!user || user.role !== 'admin') return null;
 
@@ -308,12 +316,12 @@ function Dashboard() {
         <aside style={{ width: '250px', position: 'sticky', top: '100px', background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
           <div style={{ transform: 'scale(0.8)', transformOrigin: 'left' }}><Logo size={40} /></div>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '1.5rem' }}>
-            <NavBtn active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<BarChart3 size={18}/>} label="Analytics BI" />
-            <NavBtn active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users size={18}/>} label="Community" />
-            <NavBtn active={activeTab === 'social'} onClick={() => setActiveTab('social')} icon={<MessageCircle size={18}/>} label="Moderation" />
-            <NavBtn active={activeTab === 'content'} onClick={() => setActiveTab('content')} icon={<FileText size={18}/>} label="CMS Texts" />
-            <NavBtn active={activeTab === 'theme'} onClick={() => setActiveTab('theme')} icon={<Palette size={18}/>} label="Branding" />
-            <NavBtn active={activeTab === 'security'} onClick={() => setActiveTab('security')} icon={<ShieldAlert size={18}/>} label="Security" />
+            <NavBtn active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<BarChart3 size={18}/>} label={t.dashboard.tabAnalytics} />
+            <NavBtn active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users size={18}/>} label={t.dashboard.tabCommunity} />
+            <NavBtn active={activeTab === 'social'} onClick={() => setActiveTab('social')} icon={<MessageCircle size={18}/>} label={t.dashboard.tabModeration} />
+            <NavBtn active={activeTab === 'content'} onClick={() => setActiveTab('content')} icon={<FileText size={18}/>} label={t.dashboard.tabCMS} />
+            <NavBtn active={activeTab === 'theme'} onClick={() => setActiveTab('theme')} icon={<Palette size={18}/>} label={t.dashboard.tabBranding} />
+            <NavBtn active={activeTab === 'security'} onClick={() => setActiveTab('security')} icon={<ShieldAlert size={18}/>} label={t.dashboard.tabSecurity} />
           </nav>
         </aside>
 
@@ -322,12 +330,12 @@ function Dashboard() {
             {activeTab === 'analytics' && (
               <motion.div key="analytics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                  <SectionHeader title="Performance BI" subtitle="Insight-uri vizuale despre impactul site-ului." />
+                  <SectionHeader title={t.dashboard.biTitle} subtitle={t.dashboard.biSubtitle} />
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', alignItems: 'flex-end' }}>
-                    <button onClick={injectMockData} className="btn" style={{ padding: '0.4rem 1rem', fontSize: '0.7rem', background: '#3b82f6', color: '#fff', borderRadius: '6px' }}>Generare Date Test Masive</button>
+                    <button onClick={injectMockData} className="btn" style={{ padding: '0.4rem 1rem', fontSize: '0.7rem', background: '#3b82f6', color: '#fff', borderRadius: '6px' }}>{t.dashboard.genMock}</button>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
                       <button onClick={() => toggleCategory('All')} style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '20px', border: analyticsCategories.includes('All') ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)', background: analyticsCategories.includes('All') ? 'var(--primary)' : 'var(--bg-card)', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <div style={{ width: '14px', height: '14px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.5)', background: analyticsCategories.includes('All') ? '#fff' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{analyticsCategories.includes('All') && <CheckCircle size={10} color="var(--primary)" strokeWidth={3} />}</div> Toate Categoriile
+                        <div style={{ width: '14px', height: '14px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.5)', background: analyticsCategories.includes('All') ? '#fff' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{analyticsCategories.includes('All') && <CheckCircle size={10} color="var(--primary)" strokeWidth={3} />}</div> {t.dashboard.allCategories}
                       </button>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         {['salsa', 'bachata', 'kizomba'].map(cat => {
@@ -340,15 +348,15 @@ function Dashboard() {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                  <StatCard icon={<Heart color="#ff4444"/>} label="Total Likes" value={analytics.totalLikes} color="#ff4444" />
-                  <StatCard icon={<MessageSquare color="var(--primary)"/>} label="Total Comments" value={analytics.totalComments} color="var(--primary)" />
-                  <StatCard icon={<TrendingUp color="#10b981"/>} label="Engagement Total" value={analytics.totalMedia > 0 ? (analytics.totalLikes + analytics.totalComments * 3) : 0} color="#10b981" />
-                  <StatCard icon={<Activity color="#3b82f6"/>} label="Media count" value={analytics.totalMedia} color="#3b82f6" />
+                  <StatCard icon={<Heart color="#ff4444"/>} label={t.dashboard.statLikes} value={analytics.totalLikes} color="#ff4444" />
+                  <StatCard icon={<MessageSquare color="var(--primary)"/>} label={t.dashboard.statComments} value={analytics.totalComments} color="var(--primary)" />
+                  <StatCard icon={<TrendingUp color="#10b981"/>} label={t.dashboard.statEngagement} value={analytics.totalMedia > 0 ? (analytics.totalLikes + analytics.totalComments * 3) : 0} color="#10b981" />
+                  <StatCard icon={<Activity color="#3b82f6"/>} label={t.dashboard.statMedia} value={analytics.totalMedia} color="#3b82f6" />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
                   <div className="feature-card" style={{ padding: '2rem' }}>
-                    <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Award size={20} color="gold"/> Top 5 Cel mai de succes conținut</h3>
+                    <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Award size={20} color="gold"/> {t.dashboard.topContent}</h3>
                     <div className="dash-scroll-container" style={{ maxHeight: '300px' }}>
                       {analytics.topMedia.map((m, i) => (
                         <div key={m.id} style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '1rem', borderBottom: '1px solid var(--border)' }}>
@@ -362,35 +370,35 @@ function Dashboard() {
                       ))}
                     </div>
                   </div>
-                  <div className="feature-card" style={{ padding: '2rem' }}><h3 style={{ marginBottom: '1.5rem' }}><Tag size={20} /> HashTag-uri Căutate</h3><div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>{analytics.popularTags.map(([tag, count]: any) => (<div key={tag} className="tag-pill" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }}>#{tag} <strong style={{ marginLeft: '0.8rem', color: '#fff' }}>{count}</strong></div>))}</div></div>
+                  <div className="feature-card" style={{ padding: '2rem' }}><h3 style={{ marginBottom: '1.5rem' }}><Tag size={20} /> {t.dashboard.popularTags}</h3><div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>{analytics.popularTags.map(([tag, count]: any) => (<div key={tag} className="tag-pill" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }}>#{tag} <strong style={{ marginLeft: '0.8rem', color: '#fff' }}>{count}</strong></div>))}</div></div>
                 </div>
 
-                <div style={{ borderTop: '1px dashed var(--border)', paddingTop: '2.5rem', marginBottom: '2rem' }}><SectionHeader title="Generator de Rapoarte (Power BI Mode)" subtitle="Configurare vizuală prin Drag & Drop." /></div>
+                <div style={{ borderTop: '1px dashed var(--border)', paddingTop: '2.5rem', marginBottom: '2rem' }}><SectionHeader title={t.dashboard.reportGenTitle} subtitle={t.dashboard.reportGenSub} /></div>
 
                 <div className="feature-card" style={{ padding: '2rem', marginBottom: '2rem' }}>
                   <div style={{ display: 'flex', gap: '2rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', width: '200px' }}>
-                       <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#3b82f6', marginBottom: '0.5rem' }}>Metrici (Axa Y)</div>
-                       <div draggable onDragStart={(e) => handleDragStartCustom(e, 'metric', 'comments')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MessageSquare size={14} color="var(--primary)"/> Comentarii</div>
-                       <div draggable onDragStart={(e) => handleDragStartCustom(e, 'metric', 'likes')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Heart size={14} color="#ff4444"/> Aprecieri</div>
-                       <div draggable onDragStart={(e) => handleDragStartCustom(e, 'metric', 'engagement')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><TrendingUp size={14} color="#10b981"/> Engagement</div>
+                       <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#3b82f6', marginBottom: '0.5rem' }}>{t.dashboard.metricsTitle}</div>
+                       <div draggable onDragStart={(e) => handleDragStartCustom(e, 'metric', 'comments')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MessageSquare size={14} color="var(--primary)"/> {t.dashboard.metricComments}</div>
+                       <div draggable onDragStart={(e) => handleDragStartCustom(e, 'metric', 'likes')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Heart size={14} color="#ff4444"/> {t.dashboard.metricLikes}</div>
+                       <div draggable onDragStart={(e) => handleDragStartCustom(e, 'metric', 'engagement')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><TrendingUp size={14} color="#10b981"/> {t.dashboard.metricEngagement}</div>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                       <div style={{ flex: 1, background: 'rgba(0,0,0,0.5)', borderRadius: '12px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', border: '1px dashed var(--border)', position: 'relative' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><div style={{ opacity: 0.5, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Configurează Raportul (Trage Aici)</div><button onClick={() => setCustomChart({ x: 'date', y: 'engagement', z: 'none' })} style={{ background: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', fontSize: '0.7rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>RESET</button></div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><div style={{ opacity: 0.5, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{t.dashboard.reportGenTitle} ({t.dashboard.dragAici})</div><button onClick={() => setCustomChart({ x: 'date', y: 'engagement', z: 'none' })} style={{ background: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '0.3rem 0.8rem', fontSize: '0.7rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>{t.dashboard.resetBtn}</button></div>
                         <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gridTemplateRows: '1fr 80px', gap: '1rem', flex: 1, minHeight: '250px' }}>
-                          <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDropCustom(e, 'y')} style={{ gridColumn: '1 / 2', gridRow: '1 / 2', border: '2px dashed #3b82f6', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', textAlign: 'center' }}><div style={{ fontSize: '0.8rem', opacity: 0.8, marginBottom: '0.5rem' }}>AXA Y</div><strong style={{ color: '#3b82f6', fontSize: '0.9rem' }}>{axisLabels[customChart.y]}</strong></div>
+                          <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDropCustom(e, 'y')} style={{ gridColumn: '1 / 2', gridRow: '1 / 2', border: '2px dashed #3b82f6', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', textAlign: 'center' }}><div style={{ fontSize: '0.8rem', opacity: 0.8, marginBottom: '0.5rem' }}>{t.dashboard.axisY}</div><strong style={{ color: '#3b82f6', fontSize: '0.9rem' }}>{axisLabels[customChart.y]}</strong></div>
                           <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDropCustom(e, 'z')} style={{ gridColumn: '2 / 3', gridRow: '1 / 2', border: '2px dashed #f59e0b', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><strong style={{ color: '#f59e0b', fontSize: '1.2rem' }}>{axisLabels[customChart.z]}</strong></div>
                           <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDropCustom(e, 'x')} style={{ gridColumn: '2 / 3', gridRow: '2 / 3', border: '2px dashed #10b981', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.9rem' }}><strong style={{ color: '#10b981', fontSize: '1.1rem' }}>AXA X: {axisLabels[customChart.x]}</strong></div>
                         </div>
                       </div>
                       <div>
-                         <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#10b981', marginBottom: '0.8rem' }}>Dimensiuni (X sau Legenda)</div>
+                         <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#10b981', marginBottom: '0.8rem' }}>{t.dashboard.dimsTitle}</div>
                          <div style={{ display: 'flex', gap: '0.5rem' }}>
-                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'date')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center' }}><Calendar size={14} color="#10b981"/> Timeline</div>
-                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'category')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center' }}><Grid size={14} color="#10b981"/> Stiluri Dans</div>
-                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'tags')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center' }}><Tag size={14} color="#10b981"/> Tag-uri</div>
-                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'none')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px dashed #f59e0b', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center', color: '#f59e0b' }}> Fără Legenda (Z)</div>
+                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'date')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center' }}><Calendar size={14} color="#10b981"/> {t.dashboard.dimTimeline}</div>
+                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'category')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center' }}><Grid size={14} color="#10b981"/> {t.dashboard.dimStyles}</div>
+                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'tags')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center' }}><Tag size={14} color="#10b981"/> {t.dashboard.dimTags}</div>
+                           <div draggable onDragStart={(e) => handleDragStartCustom(e, 'dimension', 'none')} className="drag-pill" style={{ cursor: 'grab', background: 'var(--bg-card)', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800, border: '1px dashed #f59e0b', display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, justifyContent: 'center', color: '#f59e0b' }}> {t.dashboard.dimNone}</div>
                          </div>
                       </div>
                     </div>
@@ -399,11 +407,11 @@ function Dashboard() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
                   <div className="feature-card" style={{ padding: '1.5rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ marginBottom: '1.5rem', fontSize: '1rem', textAlign: 'center', opacity: 0.8 }}>Evoluție Liniară: {axisLabels[customChart.y]} pe {axisLabels[customChart.x]} {customChart.z !== 'none' && <> segmentat pe {axisLabels[customChart.z]}</>}</h3>
+                    <h3 style={{ marginBottom: '1.5rem', fontSize: '1rem', textAlign: 'center', opacity: 0.8 }}>{t.dashboard.chartLine}: {axisLabels[customChart.y]} pe {axisLabels[customChart.x]} {customChart.z !== 'none' && <> segmentat pe {axisLabels[customChart.z]}</>}</h3>
                     <div style={{ width: '100%', height: '100%', minHeight: '300px', position: 'relative' }}><ResponsiveContainer width="100%" height="100%" minWidth={10} minHeight={300}><AreaChart data={customData}><CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" /><XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={10} /><YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} /><RechartsTooltip contentStyle={{ background: '#1a1a1e', border: '1px solid #333', borderRadius: '10px', textTransform: 'capitalize' }} />{customKeys.map((key, i) => (<Area key={key} type="monotone" dataKey={key} stackId={customChart.z !== 'none' ? "1" : undefined} stroke={chartColors[i % chartColors.length]} fill={chartColors[i % chartColors.length]} fillOpacity={0.6} strokeWidth={2} />))}</AreaChart></ResponsiveContainer></div>
                   </div>
                   <div className="feature-card" style={{ padding: '1.5rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ marginBottom: '1.5rem', fontSize: '1rem', textAlign: 'center', opacity: 0.8 }}>Distribuție pe Bare: {axisLabels[customChart.y]} pe {axisLabels[customChart.x]} {customChart.z !== 'none' && <> segmentat pe {axisLabels[customChart.z]}</>}</h3>
+                    <h3 style={{ marginBottom: '1.5rem', fontSize: '1rem', textAlign: 'center', opacity: 0.8 }}>{t.dashboard.chartBar}: {axisLabels[customChart.y]} pe {axisLabels[customChart.x]} {customChart.z !== 'none' && <> segmentat pe {axisLabels[customChart.z]}</>}</h3>
                     <div style={{ width: '100%', height: '100%', minHeight: '300px', position: 'relative' }}><ResponsiveContainer width="100%" height="100%" minWidth={10} minHeight={300}><BarChart data={customData}><CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} /><XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={10} /><YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} /><RechartsTooltip contentStyle={{ background: '#1a1a1e', border: '1px solid #333', borderRadius: '10px', textTransform: 'capitalize' }} cursor={{fill: 'rgba(255,255,255,0.05)'}} />{customKeys.map((key, i) => (<Bar key={key} dataKey={key} stackId={customChart.z !== 'none' ? "a" : undefined} fill={chartColors[i % chartColors.length]} radius={customChart.z !== 'none' ? [0,0,0,0] : [4,4,0,0]} />))}</BarChart></ResponsiveContainer></div>
                   </div>
                 </div>
@@ -412,11 +420,11 @@ function Dashboard() {
 
             {activeTab === 'users' && (
               <motion.div key="users" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
-                <SectionHeader title="Community Explorer" subtitle="Gestionarea profilurilor care interacționează." />
+                <SectionHeader title={t.dashboard.userExplorer} subtitle={t.dashboard.userExplorerSub} />
                 <div className="dash-scroll-container">
-                  {userStats.length === 0 ? (<div style={{ padding: '4rem', textAlign: 'center', opacity: 0.5, border: '1px dashed var(--border)', borderRadius: '16px' }}><Users size={40} style={{ marginBottom: '1rem' }} /><p>Comunitatea este momentan liniștită.</p><button onClick={injectMockData} className="btn" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: '#3b82f6', color: '#fff', borderRadius: '8px', marginTop: '1rem' }}>Populează cu Date de Test</button></div>) : (
+                  {userStats.length === 0 ? (<div style={{ padding: '4rem', textAlign: 'center', opacity: 0.5, border: '1px dashed var(--border)', borderRadius: '16px' }}><Users size={40} style={{ marginBottom: '1rem' }} /><p>{t.dashboard.tabCommunity} is empty.</p><button onClick={injectMockData} className="btn" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: '#3b82f6', color: '#fff', borderRadius: '8px', marginTop: '1rem' }}>{t.dashboard.genMock}</button></div>) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                      {userStats.map((u: any) => (<div key={u.name} className="feature-card" style={{ padding: '1.5rem', border: bannedUsers.includes(u.name) ? '1px solid #ff4444' : '1px solid var(--border)' }}><div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center', marginBottom: '1.5rem' }}><div className="user-avatar-mini" style={{ width: '50px', height: '50px', fontSize: '1.2rem', background: '#334155' }}>{u.name.charAt(0)}</div><div style={{ flex: 1 }}><h3 style={{ margin: 0, fontSize: '1rem' }}>{u.name}</h3><div style={{ fontSize: '0.7rem', opacity: 0.5 }}>Activ: {u.lastActive}</div></div>{bannedUsers.includes(u.name) ? (<button onClick={() => unbanUser(u.name)} className="btn-send-animated" style={{ background: '#10b981' }}><CheckCircle size={16}/></button>) : (<button onClick={() => { banUser(u.name); addToast(`${u.name} blocat!`, 'error'); }} className="btn-send-animated" style={{ background: '#ff4444' }}><UserX size={16}/></button>)}</div><div style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(0,0,0,0.2)', padding: '0.8rem', borderRadius: '10px' }}><div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.6rem', opacity: 0.5 }}>COMENTARII</div><div style={{ fontWeight: 900 }}>{u.commentCount}</div></div><div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.6rem', opacity: 0.5 }}>LIKE-URI</div><div style={{ fontWeight: 900 }}>{u.likeCount}</div></div><div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.6rem', opacity: 0.5 }}>INTERES</div><div style={{ fontWeight: 900, color: 'var(--primary)' }}>{typeof Array.from(u.mediaList)[0] === 'string' ? (Array.from(u.mediaList)[0] as string).split('-')[0] : ''}</div></div></div></div>))}
+                      {userStats.map((u: any) => (<div key={u.name} className="feature-card" style={{ padding: '1.5rem', border: bannedUsers.includes(u.name) ? '1px solid #ff4444' : '1px solid var(--border)' }}><div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center', marginBottom: '1.5rem' }}><div className="user-avatar-mini" style={{ width: '50px', height: '50px', fontSize: '1.2rem', background: '#334155' }}>{u.name.charAt(0)}</div><div style={{ flex: 1 }}><h3 style={{ margin: 0, fontSize: '1rem' }}>{u.name}</h3><div style={{ fontSize: '0.7rem', opacity: 0.5 }}>Activ: {u.lastActive}</div></div>{bannedUsers.includes(u.name) ? (<button onClick={() => unbanUser(u.name)} className="btn-send-animated" style={{ background: '#10b981' }}><CheckCircle size={16}/></button>) : (<button onClick={() => { banUser(u.name); addToast(`${u.name} blocked!`, 'error'); }} className="btn-send-animated" style={{ background: '#ff4444' }}><UserX size={16}/></button>)}</div><div style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(0,0,0,0.2)', padding: '0.8rem', borderRadius: '10px' }}><div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.6rem', opacity: 0.5 }}>{t.dashboard.metricComments}</div><div style={{ fontWeight: 900 }}>{u.commentCount}</div></div><div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.6rem', opacity: 0.5 }}>{t.dashboard.metricLikes}</div><div style={{ fontWeight: 900 }}>{u.likeCount}</div></div><div style={{ textAlign: 'center' }}><div style={{ fontSize: '0.6rem', opacity: 0.5 }}>{t.dashboard.dimStyles}</div><div style={{ fontWeight: 900, color: 'var(--primary)' }}>{typeof Array.from(u.mediaList)[0] === 'string' ? (Array.from(u.mediaList)[0] as string).split('-')[0] : ''}</div></div></div></div>))}
                     </div>
                   )}
                 </div>
@@ -425,12 +433,12 @@ function Dashboard() {
 
             {activeTab === 'social' && (
               <motion.div key="social" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><SectionHeader title="Moderare Social" subtitle="Control vizual direct peste conținut." /><button onClick={injectMockData} className="btn" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: '#3b82f6', color: '#fff', borderRadius: '8px' }}>Generare Date Test</button></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><SectionHeader title={t.dashboard.socialMod} subtitle={t.dashboard.socialModSub} /><button onClick={injectMockData} className="btn" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: '#3b82f6', color: '#fff', borderRadius: '8px' }}>{t.dashboard.genMock}</button></div>
                 <div className="dash-scroll-container">
-                  {Object.keys(socialData).length === 0 ? (<div style={{ padding: '4rem', textAlign: 'center', opacity: 0.5, border: '1px dashed var(--border)', borderRadius: '16px' }}><MessageCircle size={40} style={{ marginBottom: '1rem' }} /><p>Niciun conținut interactiv găsit pe site.</p></div>) : (
+                  {Object.keys(socialData).length === 0 ? (<div style={{ padding: '4rem', textAlign: 'center', opacity: 0.5, border: '1px dashed var(--border)', borderRadius: '16px' }}><MessageCircle size={40} style={{ marginBottom: '1rem' }} /><p>{t.dashboard.tabModeration} is empty.</p></div>) : (
                     Object.entries(socialData).map(([id, data]: [string, any]) => {
                     const isHidden = (data.tags || []).includes('hidden');
-                    return (<div key={id} className="feature-card" style={{ marginBottom: '1.5rem', padding: '1rem', display: 'flex', gap: '1.5rem', border: isHidden ? '1px solid #ff4444' : '1px solid var(--border)' }}><div style={{ width: '100px', height: '130px', borderRadius: '12px', overflow: 'hidden', background: '#000', position: 'relative', flexShrink: 0 }}>{mediaMap[id]?.endsWith('.mp4') ? <video src={mediaMap[id]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <img src={mediaMap[id]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}{isHidden && <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeOff color="#fff" size={20}/></div>}</div><div style={{ flex: 1 }}><div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}><code style={{ fontSize: '0.75rem', fontWeight: 800, color: isHidden ? '#ff4444' : 'var(--primary)' }}>{id}</code><button onClick={() => toggleVisibility(id)} className="btn-secondary" style={{ fontSize: '0.7rem', padding: '0.4rem 0.8rem' }}>{isHidden ? 'Publică' : 'Ascunde'}</button></div><div className="comment-mod-list">{(data.comments || []).map((c: any, i: number) => (<div key={i} style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.2)', padding: '0.5rem 0.8rem', borderRadius: '8px', marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span><strong>{c.user}:</strong> {c.text}</span><button onClick={() => deleteComment(id, i)} style={{ border: 'none', background: 'transparent', color: '#ff4444', cursor: 'pointer' }}><Trash2 size={12}/></button></div>))}</div></div></div>);
+                    return (<div key={id} className="feature-card" style={{ marginBottom: '1.5rem', padding: '1rem', display: 'flex', gap: '1.5rem', border: isHidden ? '1px solid #ff4444' : '1px solid var(--border)' }}><div style={{ width: '100px', height: '130px', borderRadius: '12px', overflow: 'hidden', background: '#000', position: 'relative', flexShrink: 0 }}>{mediaMap[id]?.endsWith('.mp4') ? <video src={mediaMap[id]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <img src={mediaMap[id]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}{isHidden && <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeOff color="#fff" size={20}/></div>}</div><div style={{ flex: 1 }}><div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}><code style={{ fontSize: '0.75rem', fontWeight: 800, color: isHidden ? '#ff4444' : 'var(--primary)' }}>{id}</code><button onClick={() => toggleVisibility(id)} className="btn-secondary" style={{ fontSize: '0.7rem', padding: '0.4rem 0.8rem' }}>{isHidden ? t.dashboard.btnPublic : t.dashboard.btnHide}</button></div><div className="comment-mod-list">{(data.comments || []).map((c: any, i: number) => (<div key={i} style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.2)', padding: '0.5rem 0.8rem', borderRadius: '8px', marginBottom: '0.3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span><strong>{c.user}:</strong> {c.text}</span><button onClick={() => deleteComment(id, i)} style={{ border: 'none', background: 'transparent', color: '#ff4444', cursor: 'pointer' }}><Trash2 size={12}/></button></div>))}</div></div></div>);
                   }))}
                 </div>
               </motion.div>
@@ -438,9 +446,9 @@ function Dashboard() {
 
             {activeTab === 'content' && (
               <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <SectionHeader title="CMS Editor" subtitle="Modifică orice text de pe site live." />
+                <SectionHeader title={t.dashboard.cmsTitle} subtitle={t.dashboard.cmsSub} />
                 <div className="feature-card" style={{ padding: '0.8rem', marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', overflowX: 'auto', borderBottom: '1px solid var(--border)', borderRadius: '12px', flexWrap: 'wrap' }}>
-                  {Object.keys(t).map(section => (typeof t[section] === 'object' && (<button key={section} onClick={() => setCmsCategory(section)} style={{ background: cmsCategory === section ? 'var(--primary)' : 'var(--bg-dark)', color: '#fff', padding: '0.4rem 0.8rem', fontSize: '0.7rem', fontWeight: 700, borderRadius: '6px', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', textTransform: 'uppercase' }}>{section}</button>)))}
+                  {Object.keys(t).map(section => (typeof t[section] === 'object' && section !== 'dashboard' && (<button key={section} onClick={() => setCmsCategory(section)} style={{ background: cmsCategory === section ? 'var(--primary)' : 'var(--bg-dark)', color: '#fff', padding: '0.4rem 0.8rem', fontSize: '0.7rem', fontWeight: 700, borderRadius: '6px', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', textTransform: 'uppercase' }}>{section}</button>)))}
                 </div>
                 <div className="dash-scroll-container" style={{ padding: '0 0.5rem' }}>
                   {Object.entries(t).filter(([sec]) => cmsCategory === 'All' ? true : sec === cmsCategory).map(([section, keys]: [string, any]) => (typeof keys === 'object' && (<div key={section} style={{ marginBottom: '2.5rem', background: 'var(--bg-card)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border)' }}><h4 style={{ color: 'var(--primary)', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '1rem', marginBottom: '2rem', fontSize: '1.2rem' }}>Secțiune: {section.toUpperCase()}</h4><div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: '2rem' }}>{Object.entries(keys).map(([key, value]: [string, any]) => (typeof value === 'string' && (<div key={key} style={{ display: 'flex', flexDirection: 'column' }}><div style={{ fontSize: '0.7rem', opacity: 0.6, marginBottom: '0.5rem', fontWeight: 800, color: 'var(--text-muted)' }}>{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</div>{value.length > 50 ? (<textarea defaultValue={editingTexts[section]?.[key] || value} onBlur={(e) => saveText(section, key, e.target.value)} style={{ width: '100%', minHeight: '100px', background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '10px', outline: 'none', resize: 'vertical' }} />) : (<input type="text" defaultValue={editingTexts[section]?.[key] || value} onBlur={(e) => saveText(section, key, e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem 1rem', borderRadius: '10px', outline: 'none' }} />)}</div>)))}</div></div>)))}
@@ -450,18 +458,18 @@ function Dashboard() {
 
             {activeTab === 'theme' && (
               <motion.div key="theme" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <SectionHeader title="Branding Studio" subtitle="Personalizează identitatea vizuală a site-ului." />
+                <SectionHeader title={t.dashboard.brandingTitle} subtitle={t.dashboard.brandingSub} />
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                  <div className="feature-card" style={{ padding: '2rem' }}><div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}><div style={{ display: 'flex', justifyContent: 'flex-end' }}><button onClick={resetTheme} className="btn btn-secondary" style={{ borderStyle: 'dashed', fontSize: '0.8rem', padding: '0.5rem 1rem' }}>Revenire la Setări Fabrică</button></div><div style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}><h4 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Culori Principale</h4><div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}><ColorRow label="Culoare Brand (Primary)" value={themeConfig.primary} onChange={(v:any) => updateTheme('primary', v)} /><ColorRow label="Culoare Secundară (Secondary)" value={themeConfig.secondary} onChange={(v:any) => updateTheme('secondary', v)} /><ColorRow label="Culoare Text (Text Main)" value={themeConfig.textMain} onChange={(v:any) => updateTheme('textMain', v)} /><ColorRow label="Text Secundar (Text Muted)" value={themeConfig.textMuted} onChange={(v:any) => updateTheme('textMuted', v)} /></div></div><div style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}><h4 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Culori Fundal</h4><div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}><ColorRow label="Fundal Site (Dark)" value={themeConfig.bgDark} onChange={(v:any) => updateTheme('bgDark', v)} /><ColorRow label="Fundal Carduri (Bg Card)" value={themeConfig.bgCard} onChange={(v:any) => updateTheme('bgCard', v)} /></div></div><div><h4 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Structură & Forme</h4><div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}><RangeRow label="Rotunjire Butoane" value={themeConfig.btnRadius} max={50} onChange={(v:any) => updateTheme('btnRadius', v)} /><RangeRow label="Rotunjire Carduri" value={themeConfig.cardRadius} max={50} onChange={(v:any) => updateTheme('cardRadius', v)} /></div></div></div></div>
-                  <div style={{ position: 'sticky', top: '100px', height: 'fit-content' }}><h3 style={{ marginBottom: '1.5rem', opacity: 0.5, textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px' }}>Live Preview</h3><div className="feature-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', background: themeConfig.bgDark }}><h1 style={{ color: themeConfig.textMain, margin: 0 }}>Titlul Principal</h1><p style={{ color: themeConfig.textMuted, lineHeight: 1.6, margin: 0 }}>Acesta este un text secundar pentru testarea contrastului.</p><div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}><button className="btn" style={{ background: themeConfig.primary, color: '#fff', borderRadius: `${themeConfig.btnRadius}px`, border: 'none', padding: '1rem 2rem', fontWeight: 800 }}>Buton Principal</button><button className="btn" style={{ background: 'transparent', color: themeConfig.textMain, borderRadius: `${themeConfig.btnRadius}px`, border: `2px solid ${themeConfig.primary}`, padding: '1rem 2rem', fontWeight: 800 }}>Buton Secundar</button></div><div style={{ marginTop: '2rem', background: themeConfig.bgCard, padding: '1.5rem', borderRadius: `${themeConfig.cardRadius}px`, border: '1px solid rgba(255,255,255,0.1)' }}><div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}><div style={{ width: '40px', height: '40px', borderRadius: '50%', background: themeConfig.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ImageIcon color="#fff" size={20}/></div><div><div style={{ color: themeConfig.textMain, fontWeight: 800 }}>Exemplu Card</div><div style={{ color: themeConfig.textMuted, fontSize: '0.8rem' }}>Subtext informativ.</div></div></div></div></div></div>
+                  <div className="feature-card" style={{ padding: '2rem' }}><div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}><div style={{ display: 'flex', justifyContent: 'flex-end' }}><button onClick={resetTheme} className="btn btn-secondary" style={{ borderStyle: 'dashed', fontSize: '0.8rem', padding: '0.5rem 1rem' }}>{t.dashboard.btnResetTheme}</button></div><div style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}><h4 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Colors</h4><div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}><ColorRow label="Brand" value={themeConfig.primary} onChange={(v:any) => updateTheme('primary', v)} /><ColorRow label="Text" value={themeConfig.textMain} onChange={(v:any) => updateTheme('textMain', v)} /></div></div><div><h4 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Shapes</h4><div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}><RangeRow label="Buttons" value={themeConfig.btnRadius} max={50} onChange={(v:any) => updateTheme('btnRadius', v)} /><RangeRow label="Cards" value={themeConfig.cardRadius} max={50} onChange={(v:any) => updateTheme('cardRadius', v)} /></div></div></div></div>
+                  <div style={{ position: 'sticky', top: '100px', height: 'fit-content' }}><h3 style={{ marginBottom: '1.5rem', opacity: 0.5, textTransform: 'uppercase', fontSize: '0.8rem' }}>{t.dashboard.livePreview}</h3><div className="feature-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', background: themeConfig.bgDark }}><h1 style={{ color: themeConfig.textMain, margin: 0 }}>Titlu</h1><p style={{ color: themeConfig.textMuted, lineHeight: 1.6, margin: 0 }}>Preview text.</p><div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}><button className="btn" style={{ background: themeConfig.primary, color: '#fff', borderRadius: `${themeConfig.btnRadius}px` }}>Buton</button></div></div></div>
                 </div>
               </motion.div>
             )}
 
             {activeTab === 'security' && (
               <motion.div key="security" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}><SectionHeader title="Securitate & Control" subtitle="Gestionarea avansată a accesului." /><button onClick={injectMockData} className="btn" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: '#3b82f6', color: '#fff', borderRadius: '8px' }}>Generare Date Test</button></div>
-                <div className="feature-card" style={{ padding: '1.5rem', overflowX: 'auto' }}><table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}><thead><tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}><th style={{ padding: '1rem', minWidth: '200px' }}>Utilizator</th><th style={{ padding: '1rem', width: '120px' }}>Stare Acces</th><th style={{ padding: '1rem' }}>Comentarii</th><th style={{ padding: '1rem' }}>Like-uri</th><th style={{ padding: '1rem' }}>Ultima Activitate</th></tr></thead><tbody>{userStats.length === 0 ? (<tr><td colSpan={5} style={{ padding: '4rem', textAlign: 'center', opacity: 0.5 }}><ShieldAlert size={40} style={{ marginBottom: '1rem' }} /><p>Nu există date despre utilizatori momentan.</p></td></tr>) : (userStats.map((u: any) => { const isBanned = bannedUsers.includes(u.name); return (<tr key={u.name} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: isBanned ? 'rgba(255,0,0,0.05)' : 'transparent' }}><td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}><div className="user-avatar-mini" style={{ width: '36px', height: '36px', background: isBanned ? '#ff4444' : 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{u.name.charAt(0).toUpperCase()}</div><div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{u.name}</div></td><td style={{ padding: '1rem' }}><input type="checkbox" checked={isBanned} onChange={() => { isBanned ? unbanUser(u.name) : banUser(u.name); addToast(`Stare actualizată!`, isBanned ? 'success' : 'error'); }} /></td><td style={{ padding: '1rem' }}>{u.commentCount}</td><td style={{ padding: '1rem' }}>{u.likeCount}</td><td style={{ padding: '1rem', fontSize: '0.75rem', opacity: 0.6 }}>{u.lastActive}</td></tr>); }))}</tbody></table></div>
+                <SectionHeader title={t.dashboard.securityTitle} subtitle={t.dashboard.securitySub} />
+                <div className="feature-card" style={{ padding: '1.5rem', overflowX: 'auto' }}><table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}><thead><tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}><th style={{ padding: '1rem' }}>User</th><th style={{ padding: '1rem' }}>Access</th><th style={{ padding: '1rem' }}>Comments</th><th style={{ padding: '1rem' }}>Last Active</th></tr></thead><tbody>{userStats.length === 0 ? (<tr><td colSpan={5} style={{ padding: '4rem', textAlign: 'center', opacity: 0.5 }}><ShieldAlert size={40} style={{ marginBottom: '1rem' }} /><p>Nu există date despre utilizatori momentan.</p></td></tr>) : (userStats.map((u: any) => { const isBanned = bannedUsers.includes(u.name); return (<tr key={u.name} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: isBanned ? 'rgba(255,0,0,0.05)' : 'transparent' }}><td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}><div className="user-avatar-mini" style={{ width: '36px', height: '36px', background: isBanned ? '#ff4444' : 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{u.name.charAt(0).toUpperCase()}</div><div style={{ fontWeight: 800 }}>{u.name}</div></td><td style={{ padding: '1rem' }}><input type="checkbox" checked={isBanned} onChange={() => { isBanned ? unbanUser(u.name) : banUser(u.name); addToast(t.dashboard.saveSuccess, isBanned ? 'success' : 'error'); }} /></td><td style={{ padding: '1rem' }}>{u.commentCount}</td><td style={{ padding: '1rem' }}>{u.lastActive}</td></tr>); }))}</tbody></table></div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -471,7 +479,6 @@ function Dashboard() {
   );
 }
 
-// Helpers
 function NavBtn({ active, onClick, icon, label }: any) {
   return <button onClick={onClick} className={`btn ${active ? 'btn-primary' : 'btn-secondary'}`} style={{ justifyContent: 'flex-start', gap: '0.8rem', width: '100%', padding: '0.75rem 1rem', fontSize: '0.9rem', border: active ? 'none' : '1px solid transparent' }}>{icon} {label}</button>;
 }

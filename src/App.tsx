@@ -104,9 +104,9 @@ function Navigation() {
         <Link to="/" className={location.pathname === '/' ? 'active' : ''}>{t.nav.home}</Link>
         <Link to="/instructors" className={location.pathname === '/instructors' ? 'active' : ''}>{t.nav.instructors}</Link>
         <Link to="/features" className={location.pathname === '/features' ? 'active' : ''}>{t.nav.classes}</Link>
+        <Link to="/schedule" className={location.pathname === '/schedule' ? 'active' : ''}>{t.nav.schedule}</Link>
         <Link to="/pricing" className={location.pathname === '/pricing' ? 'active' : ''}>Tarife</Link>
         <Link to="/combinations" className={location.pathname === '/combinations' ? 'active' : ''}>Combinații</Link>
-        <Link to="/docs" className={location.pathname === '/docs' ? 'active' : ''}>{t.nav.schedule}</Link>
         <Link to="/gallery" className={location.pathname === '/gallery' ? 'active' : ''}>{t.nav.gallery}</Link>
         <Link to="/faq" className={location.pathname === '/faq' ? 'active' : ''}>FAQ</Link>
         <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>{t.nav.contact}</Link>
@@ -239,7 +239,7 @@ function App() {
                     <Route path="/features" element={<Features />} />
                     <Route path="/pricing" element={<Pricing />} />
                     <Route path="/faq" element={<FAQ />} />
-                    <Route path="/docs" element={<Documentation />} />
+                    <Route path="/schedule" element={<Documentation />} />
                     <Route path="/gallery" element={<GalleryHub />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/contact" element={<Contact />} />
