@@ -1,14 +1,16 @@
-import { useContext, useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useContext, useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LanguageContext, Logo, ToastContext, AuthContext } from '../App';
+import { Heart, MessageCircle, Tag, Palette, FileText, Video, Trash2, Save, RotateCcw, Search, ChevronRight } from 'lucide-react';
 import '../App.css';
 
 function Dashboard() {
-  const { t } = useContext(LanguageContext);
+  const { t, lang } = useContext(LanguageContext);
   const { addToast } = useContext(ToastContext);
-  const { user } = useContext(AuthContext); // Preluam starea de autentificare
-  const [searchParams] = useSearchParams();
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState<'theme' | 'content' | 'social' | 'media'>('theme');
 
   // PROTECTIE: Daca nu e admin, trimitem la login
   useEffect(() => {
@@ -18,295 +20,326 @@ function Dashboard() {
     }
   }, [user, navigate, addToast]);
 
-  if (!user || user.role !== 'admin') return null; // Prevenim randarea pana la redirect
-  const isGuest = searchParams.get('guest') === 'true';
-
-  const [isTesting, setIsTesting] = useState(false);
-  
-  // Theme Builder State
-  const [primaryColor, setPrimaryColor] = useState('#9b1c1c');
-  const [bgDarkColor, setBgDarkColor] = useState('#0f0f11');
-  const [bgCardColor, setBgCardColor] = useState('#1a1a1e');
-  const [btnRadius, setBtnRadius] = useState(10);
-  
-  const resetTheme = () => {
-    setPrimaryColor('#9b1c1c');
-    setBgDarkColor('#0f0f11');
-    setBgCardColor('#1a1a1e');
-    setBtnRadius(10);
-    // Remove inline styles to let CSS take over again
-    const root = document.documentElement;
-    root.style.removeProperty('--primary');
-    root.style.removeProperty('--bg-dark');
-    root.style.removeProperty('--bg-card');
-    root.style.removeProperty('--radius-btn');
-  };
-
-  // Apply theme variables live
-  useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty('--primary', primaryColor);
-    root.style.setProperty('--bg-dark', bgDarkColor);
-    root.style.setProperty('--bg-card', bgCardColor);
-    root.style.setProperty('--radius-btn', `${btnRadius}px`);
-  }, [primaryColor, bgDarkColor, bgCardColor, btnRadius]);
-
-  // Student Stats Simulation
-  const [stats] = useState({ 
-    sessionsLeft: 12, 
-    activeCourses: 2, 
-    attendances: 6, 
-    daysToParty: 2 
+  // --- 1. THEME MANAGEMENT ---
+  const [themeConfig, setThemeConfig] = useState(() => {
+    const saved = localStorage.getItem('ltd_custom_theme');
+    return saved ? JSON.parse(saved) : {
+      primary: '#9b1c1c',
+      bgDark: '#0f0f11',
+      bgCard: '#1a1a1e',
+      textMain: '#f8fafc',
+      btnRadius: 10,
+      cardRadius: 16
+    };
   });
 
-  const [copied] = useState(false);
-
-  const handleTestAlert = () => {
-    setIsTesting(true);
-    setTimeout(() => {
-      setIsTesting(false);
-      addToast('Notificare de test trimisă cu succes pe WhatsApp!', 'success');
-    }, 2000);
+  const updateTheme = (key: string, value: string | number) => {
+    const newConfig = { ...themeConfig, [key]: value };
+    setThemeConfig(newConfig);
+    localStorage.setItem('ltd_custom_theme', JSON.stringify(newConfig));
+    
+    // Apply live
+    const root = document.documentElement;
+    const cssKey = key === 'btnRadius' ? '--radius-btn' : 
+                   key === 'cardRadius' ? '--radius-card' : 
+                   `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+    
+    root.style.setProperty(cssKey, typeof value === 'number' ? `${value}px` : value);
   };
 
-  const copyScheduleLink = () => {
-    const link = `${window.location.origin}/status/elev-demo`;
-    navigator.clipboard.writeText(link);
-    addToast('Link-ul a fost copiat în clipboard!', 'info');
+  const resetTheme = () => {
+    localStorage.removeItem('ltd_custom_theme');
+    window.location.reload();
   };
+
+  // --- 2. CONTENT MANAGEMENT (TEXTS) ---
+  const [editingTexts, setEditingTexts] = useState<any>(() => {
+    const saved = localStorage.getItem(`ltd_texts_override_${lang}`);
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  const saveTextOverride = (section: string, key: string, value: string) => {
+    const newOverrides = { ...editingTexts };
+    if (!newOverrides[section]) newOverrides[section] = {};
+    newOverrides[section][key] = value;
+    
+    setEditingTexts(newOverrides);
+    localStorage.setItem(`ltd_texts_override_${lang}`, JSON.stringify(newOverrides));
+    addToast('Text actualizat local! (Necesită refresh pentru aplicare totală)', 'success');
+  };
+
+  // --- 3. SOCIAL HUB MANAGEMENT ---
+  const [socialData, setSocialData] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ltd_social_data');
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+
+  const deleteComment = (mediaId: string, commentIndex: number) => {
+    const newData = { ...socialData };
+    if (newData[mediaId]?.comments) {
+      newData[mediaId].comments.splice(commentIndex, 1);
+      setSocialData(newData);
+      localStorage.setItem('ltd_social_data', JSON.stringify(newData));
+      addToast('Comentariu șters!', 'info');
+    }
+  };
+
+  const removeSocialTag = (mediaId: string, tag: string) => {
+    const newData = { ...socialData };
+    if (newData[mediaId]?.tags) {
+      newData[mediaId].tags = newData[mediaId].tags.filter((t: string) => t !== tag);
+      setSocialData(newData);
+      localStorage.setItem('ltd_social_data', JSON.stringify(newData));
+      addToast('Tag eliminat!', 'info');
+    }
+  };
+
+  if (!user || user.role !== 'admin') return null;
 
   return (
-    <div className="dashboard-layout fade-in">
+    <div className="dashboard-container" style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
       
-      {/* ADMIN: THEME BUILDER (LIVE PREVIEW) */}
-      <div className="dash-section" style={{ 
-        border: '2px solid var(--primary)', 
-        padding: '2rem', 
-        marginBottom: '3rem', 
-        background: 'rgba(155, 28, 28, 0.05)' 
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-          <div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-              🎨 Admin Panel: Theme Builder (Live)
-            </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0.5rem 0 0 0' }}>
-              Modifică aspectul site-ului în timp real. Schimbările se aplică instant pe tot site-ul.
-            </p>
+      {/* Sidebar Navigation */}
+      <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+        <aside style={{ width: '250px', position: 'sticky', top: '100px' }}>
+          <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Logo size={40} />
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 900, margin: 0 }}>LTD Admin</h2>
           </div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <button 
-              onClick={resetTheme}
-              style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '0.4rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
-            >
-              Resetare la Default
-            </button>
-            <span className="badge" style={{ background: 'var(--primary)', color: '#fff', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 800 }}>
-              DEVELOPER PREVIEW
-            </span>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
           
-          {/* Controls */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem' }}>Culoare Principală (Accent)</label>
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} style={{ width: '40px', height: '40px', padding: 0, border: 'none', borderRadius: '8px', cursor: 'pointer' }} />
-                <code style={{ fontSize: '0.8rem', background: 'var(--bg-dark)', padding: '0.4rem', borderRadius: '4px' }}>{primaryColor}</code>
-              </div>
-            </div>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {[
+              { id: 'theme', label: 'Theme Builder', icon: <Palette size={18} /> },
+              { id: 'content', label: 'Texte Pagini', icon: <FileText size={18} /> },
+              { id: 'social', label: 'Social Hub', icon: <MessageCircle size={18} /> },
+              { id: 'media', label: 'Media Library', icon: <Video size={18} /> }
+            ].map(tab => (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`btn ${activeTab === tab.id ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ justifyContent: 'flex-start', gap: '1rem', padding: '0.8rem 1.2rem', width: '100%' }}
+              >
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </nav>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem' }}>Culoare Fundal (Site)</label>
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <input type="color" value={bgDarkColor} onChange={e => setBgDarkColor(e.target.value)} style={{ width: '40px', height: '40px', padding: 0, border: 'none', borderRadius: '8px', cursor: 'pointer' }} />
-                <code style={{ fontSize: '0.8rem', background: 'var(--bg-dark)', padding: '0.4rem', borderRadius: '4px' }}>{bgDarkColor}</code>
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem' }}>Culoare Carduri/Casete</label>
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <input type="color" value={bgCardColor} onChange={e => setBgCardColor(e.target.value)} style={{ width: '40px', height: '40px', padding: 0, border: 'none', borderRadius: '8px', cursor: 'pointer' }} />
-                <code style={{ fontSize: '0.8rem', background: 'var(--bg-dark)', padding: '0.4rem', borderRadius: '4px' }}>{bgCardColor}</code>
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.4rem' }}>
-                <span>Rotunjire Butoane</span>
-                <span style={{ color: 'var(--primary)' }}>{btnRadius}px</span>
-              </label>
-              <input type="range" min="0" max="30" value={btnRadius} onChange={e => setBtnRadius(parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary)' }} />
-            </div>
+          <div style={{ marginTop: '3rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
+            <div style={{ fontSize: '0.7rem', opacity: 0.5, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Logged in as</div>
+            <div style={{ fontWeight: 800 }}>{user.name} (Admin)</div>
           </div>
+        </aside>
 
-          {/* Live Component Sample */}
-          <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px dashed var(--border)', display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Sample Componente</div>
-            <button className="btn btn-primary">Rezervă Prima Ședință</button>
-            <div className="action-btn-box" style={{ width: 'auto' }}>
-              Acțiune Secundară
-            </div>
-            <div style={{ background: 'var(--bg-card)', padding: '1rem', border: '1px solid var(--border)', borderRadius: '12px', width: '100%', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600 }}>
-              Exemplu de Caseta (Card)
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Guest Mode Banner */}
-      {isGuest && (
-        <div style={{ background: 'var(--primary)', color: '#fff', padding: '1rem 1.5rem', borderRadius: '12px', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 10px 20px rgba(239, 68, 68, 0.2)' }}>
-          <span style={{ fontSize: '0.95rem', fontWeight: 700 }}>🌟 {t.dashboard.guestMode}</span>
-          <button className="btn" style={{ background: '#fff', color: 'var(--primary)', padding: '0.5rem 1.2rem', fontSize: '0.85rem', fontWeight: 800, borderRadius: 'var(--radius-btn)' }} onClick={() => navigate('/onboarding')}>
-            {t.dashboard.activateAlerts}
-          </button>
-        </div>
-      )}
-
-      {/* 1. Header & Actions */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          <Logo size={48} />
-          <div>
-            <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 900, letterSpacing: '-0.02em' }}>{t.dashboard.title}</h1>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--success)', fontWeight: 600 }}>
-              Bine ai revenit la cursuri! Energia ta e contagioasă.
-            </p>
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button 
-            className="btn btn-secondary" 
-            style={{ fontSize: '0.85rem', borderRadius: 'var(--radius-btn)' }}
-            onClick={handleTestAlert}
-            disabled={isTesting}
-          >
-            {isTesting ? 'Se trimite...' : t.dashboard.btnTestAlert}
-          </button>
-          <button className="btn btn-primary" style={{ fontSize: '0.85rem' }} onClick={() => navigate('/pricing')}>
-            {t.dashboard.addSite}
-          </button>
-        </div>
-      </header>
-
-      {/* 2. Metric Cards */}
-      <div className="stats-summary-bar">
-        <div className="dash-section" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ fontSize: '2rem', background: 'rgba(239,68,68,0.1)', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎟️</div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="label">{t.dashboard.statChannels}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1, marginTop: '0.2rem', color: 'var(--primary)' }}>{stats.sessionsLeft}</div>
-          </div>
-        </div>
-        <div className="dash-section" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ fontSize: '2rem', background: 'rgba(239,68,68,0.1)', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🕺</div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="label">{t.dashboard.statButtons}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1, marginTop: '0.2rem' }}>{stats.activeCourses}</div>
-          </div>
-        </div>
-        <div className="dash-section" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ fontSize: '2rem', background: 'rgba(16,185,129,0.1)', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✅</div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="label">{t.dashboard.statAlerts}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--success)', lineHeight: 1, marginTop: '0.2rem' }}>{stats.attendances}</div>
-          </div>
-        </div>
-        <div className="dash-section" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ fontSize: '2rem', background: 'rgba(249,115,22,0.1)', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🔥</div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="label">{t.dashboard.statDaysSince}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1, marginTop: '0.2rem', color: '#f97316' }}>{stats.daysToParty}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Community Stats / Girl-Boy Balance */}
-      <div className="dash-section">
-        <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Main Content Area */}
+        <main style={{ flex: 1, minWidth: 0 }}>
           
-          <div style={{ flex: 1, minWidth: '300px' }}>
-            <h3 style={{ fontSize: '1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: 800 }}>
-              {t.dashboard.leakTitle}
-              <span className="badge" style={{ fontSize: '0.7rem' }}>SALA ACTUALĂ</span>
-            </h3>
-            <div style={{ fontSize: '1.5rem', color: 'var(--success)', fontWeight: 900, marginBottom: '1rem' }}>
-              {t.dashboard.leakOk}
-            </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
-              Monitorizăm în timp real numărul de înscrieri pentru a păstra un echilibru optim între fete și băieți la curs, asigurând cea mai buna experiență de învățare.
-            </p>
-          </div>
-
-          <div style={{ width: '400px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontWeight: 700 }}>{t.dashboard.leakStep1}</span>
-              <span style={{ fontWeight: 900, color: 'var(--primary)' }}>42</span>
-            </div>
-            <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
-              <div style={{ width: '85%', height: '100%', background: 'var(--primary)' }}></div>
-            </div>
+          <AnimatePresence mode="wait">
             
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem' }}>
-              <span style={{ fontWeight: 700 }}>{t.dashboard.leakStep2}</span>
-              <span style={{ fontWeight: 900, color: 'var(--accent)' }}>38</span>
-            </div>
-            <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
-              <div style={{ width: '75%', height: '100%', background: 'var(--accent)' }}></div>
-            </div>
-          </div>
+            {/* --- TAB: THEME --- */}
+            {activeTab === 'theme' && (
+              <motion.div key="theme" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <SectionHeader title="Theme Builder" subtitle="Control vizual complet peste culorile și formele site-ului." />
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                  <div className="feature-card" style={{ padding: '2rem' }}>
+                    <h4 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Palette size={16} /> Culori de Sistem</h4>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      <ColorInput label="Culoare Accent (Brand)" value={themeConfig.primary} onChange={v => updateTheme('primary', v)} />
+                      <ColorInput label="Fundal Site" value={themeConfig.bgDark} onChange={v => updateTheme('bgDark', v)} />
+                      <ColorInput label="Fundal Carduri" value={themeConfig.bgCard} onChange={v => updateTheme('bgCard', v)} />
+                      <ColorInput label="Text Principal" value={themeConfig.textMain} onChange={v => updateTheme('textMain', v)} />
+                    </div>
 
-        </div>
+                    <h4 style={{ margin: '2rem 0 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><RotateCcw size={16} /> Forme & Structură</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      <RangeInput label="Rotunjire Butoane" value={themeConfig.btnRadius} min={0} max={30} onChange={v => updateTheme('btnRadius', v)} />
+                      <RangeInput label="Rotunjire Carduri" value={themeConfig.cardRadius} min={0} max={40} onChange={v => updateTheme('cardRadius', v)} />
+                    </div>
+
+                    <button onClick={resetTheme} className="btn-secondary" style={{ marginTop: '2rem', width: '100%', border: '1px dashed var(--primary)' }}>
+                      Resetare la Valorile din Cod
+                    </button>
+                  </div>
+
+                  <div style={{ position: 'sticky', top: '100px' }}>
+                    <h4 style={{ marginBottom: '1rem', opacity: 0.6 }}>Live Preview Sample</h4>
+                    <div style={{ background: 'var(--bg-dark)', padding: '3rem', borderRadius: '24px', border: '1px solid var(--border)', textAlign: 'center' }}>
+                      <span className="hero-accent" style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>Love2Dance Preview</span>
+                      <h3 style={{ marginBottom: '2rem' }}>Exemplu de Titlu Secțiune</h3>
+                      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
+                        <button className="btn btn-primary">Buton Principal</button>
+                        <button className="btn btn-secondary">Buton Secundar</button>
+                      </div>
+                      <div className="feature-card" style={{ padding: '1.5rem', textAlign: 'left' }}>
+                        <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.7rem' }}>BADGE TEXT</div>
+                        <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Acesta este un card de conținut pentru a testa contrastul culorilor.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* --- TAB: CONTENT --- */}
+            {activeTab === 'content' && (
+              <motion.div key="content" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <SectionHeader title="Gestiune Texte" subtitle={`Editează textele de pe site pentru limba curentă (${lang.toUpperCase()}).`} />
+                
+                <div className="feature-card" style={{ padding: '2rem' }}>
+                  {Object.entries(t).map(([section, keys]: [string, any]) => (
+                    typeof keys === 'object' && (
+                      <details key={section} style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
+                        <summary style={{ cursor: 'pointer', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--primary)' }}>
+                          Secțiunea: {section}
+                        </summary>
+                        <div style={{ padding: '1.5rem 0', display: 'grid', gap: '1rem' }}>
+                          {Object.entries(keys).map(([key, value]: [string, any]) => (
+                            typeof value === 'string' && (
+                              <div key={key}>
+                                <label style={{ fontSize: '0.75rem', opacity: 0.5, display: 'block', marginBottom: '0.3rem' }}>{key}</label>
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                  <textarea 
+                                    defaultValue={editingTexts[section]?.[key] || value}
+                                    onBlur={(e) => saveTextOverride(section, key, e.target.value)}
+                                    style={{ flex: 1, background: 'var(--bg-dark)', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--border)', color: '#fff', fontSize: '0.9rem', minHeight: '60px' }}
+                                  />
+                                </div>
+                              </div>
+                            )
+                          ))}
+                        </div>
+                      </details>
+                    )
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* --- TAB: SOCIAL --- */}
+            {activeTab === 'social' && (
+              <motion.div key="social" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <SectionHeader title="Social Hub Moderator" subtitle="Administrează comentariile și tag-urile adăugate de comunitate." />
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                  {Object.entries(socialData).length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '5rem', opacity: 0.5 }}>Nu există încă activitate socială pe site.</div>
+                  ) : (
+                    Object.entries(socialData).map(([mediaId, data]: [string, any]) => (
+                      <div key={mediaId} className="feature-card" style={{ padding: '2rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
+                          <div>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: 800 }}>MEDIA ID</div>
+                            <code style={{ fontSize: '1.1rem', fontWeight: 700 }}>{mediaId}</code>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <span className="badge" style={{ background: 'rgba(255,255,255,0.05)' }}>{data.likes || 0} Likes</span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '3rem' }}>
+                          {/* Comments Mod */}
+                          <div>
+                            <h5 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MessageCircle size={14} /> Comentarii ({(data.comments || []).length})</h5>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                              {(data.comments || []).map((c: any, i: number) => (
+                                <div key={i} style={{ padding: '1rem', background: 'var(--bg-dark)', borderRadius: '12px', border: '1px solid var(--border)', position: 'relative' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                                    <strong style={{ fontSize: '0.85rem' }}>{c.user}</strong>
+                                    <span style={{ fontSize: '0.7rem', opacity: 0.4 }}>{c.date}</span>
+                                  </div>
+                                  <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>{c.text}</p>
+                                  <button 
+                                    onClick={() => deleteComment(mediaId, i)}
+                                    style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.3rem' }}
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Tags Mod */}
+                          <div>
+                            <h5 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Tag size={14} /> Tags Activity</h5>
+                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                              {(data.tags || []).map((tag: string) => (
+                                <span key={tag} className="tag-pill">
+                                  #{tag} 
+                                  <Trash2 size={10} style={{ marginLeft: '0.5rem', cursor: 'pointer' }} onClick={() => removeSocialTag(mediaId, tag)} />
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* --- TAB: MEDIA --- */}
+            {activeTab === 'media' && (
+              <motion.div key="media" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <SectionHeader title="Media Monitor" subtitle="Vezi rapid starea fișierelor încărcate în server." />
+                <div className="feature-card" style={{ padding: '3rem', textAlign: 'center', borderStyle: 'dashed' }}>
+                  <Video size={48} style={{ marginBottom: '1.5rem', opacity: 0.2 }} />
+                  <h3>Scanare Automată Activă</h3>
+                  <p style={{ color: 'var(--text-muted)', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                    Site-ul scanează automat folderele de pe disc. Orice video sau poză adăugată în <code>/public/Storage</code> va apărea instantaneu pe paginile corespunzătoare.
+                  </p>
+                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                    <div className="badge" style={{ padding: '1rem 2rem' }}>Galerie: OK</div>
+                    <div className="badge" style={{ padding: '1rem 2rem' }}>Cursuri: OK</div>
+                    <div className="badge" style={{ padding: '1rem 2rem' }}>Instructori: OK</div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+        </main>
       </div>
+    </div>
+  );
+}
 
-      {/* 4. Schedule Sharing */}
-      <div className="dash-section" style={{ background: 'rgba(239, 68, 68, 0.05)', borderStyle: 'dashed' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>🔗 {t.dashboard.healthLinkTitle}</h4>
-            <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Vezi programul tău personalizat și progresul pe orice dispozitiv.</p>
-          </div>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <code style={{ background: 'var(--bg-dark)', padding: '0.6rem 1.2rem', borderRadius: '8px', fontSize: '0.85rem', border: '1px solid var(--border)', fontWeight: 600 }}>
-              lovetodance.ro/status/elev-demo
-            </code>
-            <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-btn)' }} onClick={copyScheduleLink}>
-              {copied ? t.dashboard.linkCopied : t.dashboard.copyLink}
-            </button>
-          </div>
-        </div>
+// --- HELPER COMPONENTS ---
+
+function SectionHeader({ title, subtitle }: { title: string, subtitle: string }) {
+  return (
+    <header style={{ marginBottom: '3rem' }}>
+      <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>{title}</h1>
+      <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>{subtitle}</p>
+    </header>
+  );
+}
+
+function ColorInput({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <code>{value}</code>
+        <input type="color" value={value} onChange={e => onChange(e.target.value)} style={{ width: '35px', height: '35px', border: 'none', borderRadius: '50%', cursor: 'pointer' }} />
       </div>
+    </div>
+  );
+}
 
-      {/* 5. Recent Activity */}
-      <div className="dash-section">
-        <h3 style={{ fontSize: '1rem', marginBottom: '1.5rem', fontWeight: 800 }}>{t.dashboard.tableTitle}</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
-          {[
-            { btn: 'Salsa', page: 'Level 1 - Figuri Intermediare', time: 'Aseară', icon: '💃', status: 'Prezent' },
-            { btn: 'Bachata', page: 'Level 1 - Conexiune', time: '2 zile', icon: '🎵', status: 'Prezent' },
-            { btn: 'Social Party', page: 'Club Salsa București', time: '5 zile', icon: '🎉', status: 'Prezent' }
-          ].map((item, idx) => (
-            <div key={idx} style={{ padding: '1.5rem', background: 'var(--bg-dark)', borderRadius: '16px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-              <div style={{ fontSize: '1.8rem', width: '55px', height: '55px', borderRadius: '14px', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)' }}>{item.icon}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, fontSize: '1rem' }}>{item.btn}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.page}</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ color: 'var(--success)', fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase' }}>{item.status}</div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>{item.time}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+function RangeInput({ label, value, min, max, onChange }: { label: string, value: number, min: number, max: number, onChange: (v: number) => void }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+        <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{label}</span>
+        <span style={{ fontWeight: 800, color: 'var(--primary)' }}>{value}px</span>
       </div>
-
+      <input type="range" min={min} max={max} value={value} onChange={e => onChange(parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary)' }} />
     </div>
   );
 }

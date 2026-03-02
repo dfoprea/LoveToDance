@@ -178,7 +178,38 @@ function App() {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const t = useMemo(() => translations[lang] || translations['ro'], [lang]);
+  // --- LOGICĂ TEXTE CUSTOM (DIN DASHBOARD) ---
+  const t = useMemo(() => {
+    const base = translations[lang] || translations['ro'];
+    const overrides = localStorage.getItem(`ltd_texts_override_${lang}`);
+    if (!overrides) return base;
+    
+    try {
+      const parsed = JSON.parse(overrides);
+      const merged = { ...base };
+      Object.keys(parsed).forEach(section => {
+        merged[section] = { ...merged[section], ...parsed[section] };
+      });
+      return merged;
+    } catch { return base; }
+  }, [lang]);
+
+  // --- LOGICĂ TEMĂ CUSTOM (DIN DASHBOARD) ---
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('ltd_custom_theme');
+    if (savedTheme) {
+      try {
+        const config = JSON.parse(savedTheme);
+        const root = document.documentElement;
+        Object.entries(config).forEach(([key, value]) => {
+          const cssKey = key === 'btnRadius' ? '--radius-btn' : 
+                         key === 'cardRadius' ? '--radius-card' : 
+                         `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+          root.style.setProperty(cssKey, typeof value === 'number' ? `${value}px` : value as string);
+        });
+      } catch (e) { console.error("Theme parse error", e); }
+    }
+  }, []);
 
   const login = (id: string, name: string, role: UserRole) => {
     const newUser = { id, name, role };
