@@ -336,7 +336,7 @@ function Instructors() {
         animate="visible"
       >
         {teams.map((team) => (
-          <motion.div key={team.id} className="instructor-section" variants={fadeInUp}>
+          <motion.div key={team.id} id={team.id} className="instructor-section" variants={fadeInUp}>
             <InstructorGallery teamId={team.id} />
             <div>
               <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1.5rem' }}>{team.name}</h2>

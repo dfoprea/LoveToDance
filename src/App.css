@@ -435,6 +435,20 @@ select option {
   border: 1px solid var(--border);
 }
 
+.instructor-link {
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+}
+
+.instructor-link:hover {
+  filter: brightness(1.2);
+  border-bottom-color: var(--primary);
+}
+
 .comment-input-wrapper {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border);

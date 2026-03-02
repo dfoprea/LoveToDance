@@ -192,5 +192,11 @@ Am implementat două experiențe de vizualizare diferite, în funcție de contex
 *   **Format Dată Internațional:** Am adoptat standardul `2 Mar 2026 14:30`, mult mai elegant și mai clar decât formatul local cu puncte.
 *   **Incentive Input:** Câmpul de scriere are avatar neutru, glow roșu la selecție și animație de rotire a butonului de trimitere, invitând activ la conversație.
 
+### 6. Îmbunătățiri Pagina Program (Documentation UX)
+*   **📍 Adresă Interactivă:** Redenumirea secțiunii de contact în „Adresă” și integrarea unei hărți Google Maps direct în pagină (cu filtru vizual adaptat temei).
+*   **🔗 Anchor Navigation (Instructori):** Numele instructorilor din tabelul de program sunt acum link-uri active. Un click pe „Claudia & Florin” te trimite direct la secțiunea lor de pe pagina de Instructori, folosind un mecanism de scroll fluid bazat pe ID-uri unice.
+*   **📞 Contact Action:** Transformarea textului de contact într-o zonă de acțiune prioritară. Titlul afișează numărul Corinei în alb boldat pentru vizibilitate, iar butonul principal oferă acces rapid la formularul de înscriere.
+*   **📅 Actualizare Tabel:** Extinderea programului cu ziua de JOI (Kizomba & Practică).
+
 ---
 *Document actualizat pe 2 Martie 2026.*
