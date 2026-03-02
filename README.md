@@ -7,14 +7,21 @@ Vizualizează aplicația live aici: **[https://love-to-dance-family.surge.sh/](h
 
 ---
 
+## 🆕 Recent Update: Fluiditate & Design (Martie 2026)
+Ultimul update a adus o transformare majoră la nivel de experiență utilizator (UX):
+- **Fluiditate Vizuală:** Întreg site-ul a fost optimizat folosind bibliotecile **framer-motion** și **lucide-react**, oferind tranziții line și interacțiuni naturale.
+- **Responsivitate Maximă:** Interfața a fost reconstruită pentru a fi mult mai responsivă, adaptându-se instantaneu pe orice rezoluție, de la telefoane mobile la monitoare ultra-wide.
+- **Hover & Feedback:** Implementarea unui sistem discret de feedback vizual (glow effect) care confirmă interacțiunea fără a afecta stabilitatea layout-ului.
+
+---
+
 ## ✨ Caracteristici Principale
 
-- **Fluiditate Vizuală:** Animații profesionale realizate cu `framer-motion` pentru o navigare plăcută.
-- **Design Modern & Responsiv:** Interfață adaptată perfect pentru orice dispozitiv (Mobile-First).
+- **Design Modern:** Interfață orientată spre conținut vizual, cu Dark Mode implicit.
 - **Galerie Socială:** Sistem avansat de vizualizare media (Foto/Video) cu funcționalități de tip TikTok/Instagram.
 - **Auto-Discovery:** Administrare inteligentă a conținutului prin scanarea automată a directoarelor de stocare.
 - **Internationalizare:** Suport complet pentru 4 limbi (RO, EN, DE, FR).
-- **Theme Builder:** Panou de control pentru personalizarea live a culorilor și stilului.
+- **Theme Builder:** Panou de control pentru personalizarea live a culorilor și stilului direct din Dashboard.
 
 ## 🛠️ Tehnologii Utilizate
 
