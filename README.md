@@ -7,12 +7,14 @@ Vizualizează aplicația live aici: **[https://love-to-dance-family.surge.sh/](h
 
 ---
 
-## 🆕 Recent Update: Actualizare Dashboard de Admin (v2.0)
-Această versiune transformă Dashboard-ul într-un centru de control complet pentru managementul site-ului:
-1. **Theme Builder:** Un editor vizual live unde se pot schimba culorile de brand (Accent, Fundal Site, Carduri), precum și rotunjirile butoanelor și ale casetelor. Schimbările se aplică instantaneu și sunt persistente.
-2. **Gestiune Texte (CMS):** Corina poate acum edita orice text de pe site (titluri, descrieri, butoane) direct din interfață, pentru fiecare limbă în parte. Textele editate sunt salvate local și suprascriu versiunile implicite.
-3. **Social Hub Moderator:** O zonă centralizată unde adminul vede toată activitatea (Like-uri, Comentarii, Tag-uri) mapată pe ID-urile fișierelor media. Poate șterge comentarii nepotrivite sau elimina tag-uri greșite cu un singur click.
-4. **Media Monitor:** Un panou de control pentru verificarea statusului scanării automate a fișierelor din folderul de stocare.
+## 🆕 Recent Update: Actualizare Dashboard de Admin (v3.0)
+Această versiune transformă Dashboard-ul într-un centru veritabil de **Business Intelligence (BI)** și **Community Management (CRM)**:
+
+1. **Analytics BI (Power BI Style):** Un generator de rapoarte interactiv cu funcționalitate **Drag & Drop**. Corina poate tăia datele (Likes, Comments, Engagement) pe orice axă dorită (Timeline, Stiluri de Dans, Tag-uri) folosind un motor de tip Pivot Table integrat.
+2. **Community CRM:** Tabel automat de monitorizare a utilizatorilor care extrage istoricul de interacțiuni, prima și ultima activitate, oferind posibilitatea de a bloca (Ban) utilizatori cu un singur click.
+3. **Branding Studio 2.0:** Control extins asupra întregii palete de culori și a formelor (border-radius) cu **Live Preview** instantaneu.
+4. **CMS Editor v2:** Organizare inteligentă a textelor pe pagini (tab-uri) și input-uri automate care detectează lungimea textului.
+5. **Unified Brand Identity:** Integrare completă a brandului **LoveToDance** (corectat) și restaurarea stilului cursiv roșu original pentru impact maxim.
 
 ### 🛡️ Optimizare SEO & Performanță
 Utilizarea bibliotecilor **framer-motion** și **lucide-react** nu afectează negativ SEO, ci contribuie activ la succesul platformei:
