@@ -7,11 +7,13 @@ Vizualizează aplicația live aici: **[https://love-to-dance-family.surge.sh/](h
 
 ---
 
-## 🆕 Recent Update: Fluiditate & Design (Martie 2026)
-Ultimul update a adus o transformare majoră la nivel de experiență utilizator (UX), oferind platformei o **„notă premium” de fluiditate și design**:
-- **Fluiditate Vizuală:** Întreg site-ul a fost optimizat folosind bibliotecile **framer-motion** și **lucide-react**, oferind tranziții line și interacțiuni naturale.
-- **Responsivitate Maximă:** Interfața a fost reconstruită pentru a fi mult mai responsivă, adaptându-se instantaneu pe orice rezoluție.
-- **Hover & Feedback:** Implementarea unui sistem discret de feedback vizual (glow effect) care confirmă interacțiunea într-un mod elegant.
+## 🆕 Recent Update: Social Hub Transformation (Martie 2026)
+Ultimul update a transformat platforma dintr-o prezentare statică într-un **Social Hub** interactiv, axat pe implicarea comunității:
+- **Sistem Social Complet:** Implementare Like, Share și Comentarii cu persistență locală pe toate elementele media.
+- **Featured Choreography:** Secțiunea "Nou la Curs" din pagina de Combinatii, care evidențiază automat cea mai recentă coregrafie pentru un impact maxim.
+- **Dynamic Comment Drawer:** Discuții în timp real peste videoclipuri în stil TikTok/Reels, folosind tehnici de "Layer Isolation" pentru stabilitatea video-ului.
+- **Galerie Modernă:** Reorganizare stil Facebook cu flux vertical și sistem de Tag-uri active pentru filtrare inteligentă.
+- **Premium UX:** Formate de dată internaționale, auto-scroll la postare și animații de focus pentru o experiență de utilizare de top.
 
 ### 🛡️ Optimizare SEO & Performanță
 Utilizarea bibliotecilor **framer-motion** și **lucide-react** nu afectează negativ SEO, ci contribuie activ la succesul platformei:
