@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Heart, MessageCircle, Share2, Send, Facebook, MessageSquare, Link as LinkIcon, X } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Send, Facebook, MessageSquare, Link as LinkIcon, X, Instagram, Music2 } from 'lucide-react';
 import { AuthContext, ToastContext } from '../App';
 import '../App.css';
 
@@ -207,9 +207,13 @@ function GalleryHub() {
     if (!activeItem) return;
     const shareUrl = window.location.origin + activeItem.url;
     const message = `Vezi acest moment Love2Dance: ${shareUrl}`;
+    
     if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
     else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-    else if (platform === 'copy') { navigator.clipboard.writeText(shareUrl); addToast('Copiat!', 'success'); }
+    else if (platform === 'instagram' || platform === 'tiktok' || platform === 'copy') { 
+      navigator.clipboard.writeText(shareUrl); 
+      addToast(platform === 'copy' ? 'Link copiat!' : `Link copiat pentru ${platform.charAt(0).toUpperCase() + platform.slice(1)}! ✅`, 'success'); 
+    }
     setShowShareMenu(false);
   };
 
@@ -272,9 +276,11 @@ function GalleryHub() {
                     <AnimatePresence>
                       {showShareMenu && (
                         <motion.div className="share-menu-floating" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
-                          <button className="share-option" onClick={() => handleShare('whatsapp')}><MessageSquare size={18} /></button>
-                          <button className="share-option" onClick={() => handleShare('facebook')}><Facebook size={18} /></button>
-                          <button className="share-option" onClick={() => handleShare('copy')}><LinkIcon size={18} /></button>
+                          <button className="share-option" onClick={() => handleShare('whatsapp')} title="WhatsApp"><MessageSquare size={18} /></button>
+                          <button className="share-option" onClick={() => handleShare('facebook')} title="Facebook"><Facebook size={18} /></button>
+                          <button className="share-option" onClick={() => handleShare('instagram')} title="Instagram"><Instagram size={18} /></button>
+                          <button className="share-option" onClick={() => handleShare('tiktok')} title="TikTok"><Music2 size={18} /></button>
+                          <button className="share-option" onClick={() => handleShare('copy')} title="Copy Link"><LinkIcon size={18} /></button>
                         </motion.div>
                       )}
                     </AnimatePresence>

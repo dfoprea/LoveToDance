@@ -2,7 +2,7 @@ import { useState, useMemo, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Heart, Share2, Facebook, MessageSquare, Link as LinkIcon, MessageCircle, X, Send } from 'lucide-react';
+import { Heart, Share2, Facebook, MessageSquare, Link as LinkIcon, MessageCircle, X, Send, Instagram, Music2 } from 'lucide-react';
 import { ToastContext, AuthContext } from '../App';
 import '../App.css';
 
@@ -169,6 +169,17 @@ function Combinations() {
                 </div>
                 <div className="interaction-item">
                   <div className="interaction-btn" onClick={(e) => { e.stopPropagation(); setActiveShareId(activeShareId === latestCombo.id ? null : latestCombo.id); }}><Share2 size={22} /></div>
+                  <AnimatePresence>
+                    {activeShareId === latestCombo.id && (
+                      <motion.div className="share-menu-floating" style={{ bottom: '0', right: '55px' }} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} onClick={(e) => e.stopPropagation()}>
+                        <button className="share-option" onClick={() => handleShare(latestCombo.url, 'whatsapp')} title="WhatsApp"><MessageSquare size={16} /></button>
+                        <button className="share-option" onClick={() => handleShare(latestCombo.url, 'facebook')} title="Facebook"><Facebook size={16} /></button>
+                        <button className="share-option" onClick={() => handleShare(latestCombo.url, 'instagram')} title="Instagram"><Instagram size={16} /></button>
+                        <button className="share-option" onClick={() => handleShare(latestCombo.url, 'tiktok')} title="TikTok"><Music2 size={16} /></button>
+                        <button className="share-option" onClick={() => handleShare(latestCombo.url, 'copy')} title="Copy Link"><LinkIcon size={16} /></button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -304,9 +315,11 @@ function Combinations() {
                       <AnimatePresence>
                         {activeShareId === combo.id && (
                           <motion.div className="share-menu-floating" style={{ bottom: '0', right: '45px' }} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} onClick={(e) => e.stopPropagation()}>
-                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'whatsapp')}><MessageSquare size={14} /></button>
-                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'facebook')}><Facebook size={14} /></button>
-                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'copy')}><LinkIcon size={14} /></button>
+                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'whatsapp')} title="WhatsApp"><MessageSquare size={14} /></button>
+                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'facebook')} title="Facebook"><Facebook size={14} /></button>
+                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'instagram')} title="Instagram"><Instagram size={14} /></button>
+                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'tiktok')} title="TikTok"><Music2 size={14} /></button>
+                            <button className="share-option" style={{ width: '32px', height: '32px' }} onClick={() => handleShare(combo.url, 'copy')} title="Copy Link"><LinkIcon size={14} /></button>
                           </motion.div>
                         )}
                       </AnimatePresence>

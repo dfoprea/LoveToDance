@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Heart, Users, Star, ArrowRight, Play, Camera, Share2, Facebook, MessageSquare, Link as LinkIcon } from 'lucide-react';
+import { Heart, Users, Star, ArrowRight, Play, Camera, Share2, Facebook, MessageSquare, Link as LinkIcon, Instagram, Music2 } from 'lucide-react';
 import { LanguageContext, ToastContext, AuthContext } from '../App';
 import '../App.css';
 
@@ -54,17 +54,11 @@ function Home() {
     const shareUrl = window.location.origin;
     const message = `Vino și tu la Love2Dance! Vezi atmosfera de aici: ${shareUrl}`;
 
-    switch (platform) {
-      case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-        break;
-      case 'facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-        break;
-      case 'copy':
-        navigator.clipboard.writeText(shareUrl);
-        addToast('Link site copiat! ✅', 'success');
-        break;
+    if (platform === 'whatsapp') window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+    else if (platform === 'instagram' || platform === 'tiktok' || platform === 'copy') { 
+      navigator.clipboard.writeText(shareUrl); 
+      addToast(platform === 'copy' ? 'Link site copiat!' : `Link copiat pentru ${platform.charAt(0).toUpperCase() + platform.slice(1)}! ✅`, 'success'); 
     }
     setShowShareMenu(false);
   };
@@ -161,6 +155,8 @@ function Home() {
                 >
                   <button className="share-option" onClick={() => handleShare('whatsapp')} title="WhatsApp"><MessageSquare size={18} /></button>
                   <button className="share-option" onClick={() => handleShare('facebook')} title="Facebook"><Facebook size={18} /></button>
+                  <button className="share-option" onClick={() => handleShare('instagram')} title="Instagram"><Instagram size={18} /></button>
+                  <button className="share-option" onClick={() => handleShare('tiktok')} title="TikTok"><Music2 size={18} /></button>
                   <button className="share-option" onClick={() => handleShare('copy')} title="Copy Link"><LinkIcon size={18} /></button>
                 </motion.div>
               )}
