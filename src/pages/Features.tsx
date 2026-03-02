@@ -109,28 +109,27 @@ function Features() {
         ))}
       </motion.div>
 
-      <motion.div 
-        variants={fadeInUp} 
-        initial="hidden" 
-        whileInView="visible" 
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         style={{ marginTop: '6rem', textAlign: 'center', padding: '4rem 2rem', background: 'var(--bg-card)', borderRadius: '30px', border: '1px solid var(--border)' }}
       >
-        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>Vrei să înveți să dansezi?</h2>
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>{t.features.ctaTitle}</h2>
         <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '3rem' }}>
-          Indiferent de stilul ales, abonamentul nostru lunar îți oferă libertate totală.
+          {t.features.ctaDesc}
         </p>
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="btn-primary-full" 
-          style={{ maxWidth: '350px', margin: '0 auto' }} 
+          className="btn-primary-full"
+          style={{ maxWidth: '350px', margin: '0 auto' }}
           onClick={() => navigate('/pricing')}
         >
-          VEZI TARIFE & ÎNSCRIERE
+          {t.features.ctaBtn}
         </motion.button>
-      </motion.div>
-    </motion.div>
+      </motion.div>    </motion.div>
   );
 }
 

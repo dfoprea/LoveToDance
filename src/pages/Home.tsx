@@ -404,15 +404,14 @@ function Home() {
           <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', background: 'var(--primary)', filter: 'blur(100px)', opacity: 0.2, zIndex: 0 }}></div>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <Camera size={48} color="var(--primary)" style={{ margin: '0 auto 1.5rem' }} />
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', color: '#fff' }}>Surprinde Magia Dansului</h2>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', color: '#fff' }}>{t.home.galleryCtaTitle}</h2>
             <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
-              Bucură-te de momentele noastre speciale! Aruncă o privire peste energia din timpul cursurilor, de la petrecerile sociale și din festivaluri.
+              {t.home.galleryCtaDesc}
             </p>
             <button className="btn btn-primary btn-glow" onClick={() => navigate('/gallery')} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Play size={20} fill="currentColor" /> Explorează Galeria
+              <Play size={20} fill="currentColor" /> {t.home.galleryCtaBtn}
             </button>
-          </div>
-        </motion.div>
+          </div>        </motion.div>
       </section>
 
       {/* 5. Google Maps Location */}

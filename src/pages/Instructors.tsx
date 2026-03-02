@@ -340,9 +340,9 @@ function Instructors() {
         {teams.map((team) => (
           <motion.div key={team.id} id={team.id} className="instructor-section" variants={fadeInUp}>
             <InstructorGallery teamId={team.id} />
-            <div>
+            <div style={{ textAlign: 'center' }}>
               <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1.5rem' }}>{team.name}</h2>
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', justifyContent: 'center' }}>
                 {team.tags.map(tag => <span key={tag} className="badge" style={{ background: 'rgba(155,28,28,0.1)', color: 'var(--primary)', fontWeight: 700 }}>{tag}</span>)}
               </div>
               <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: 'var(--text-muted)' }}>{team.bio}</p>

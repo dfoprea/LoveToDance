@@ -24,7 +24,15 @@ export const translations = {
       socialTitle: 'Vibe-ul LTD Family',
       socialSubtitle: 'Urmărește-ne pe Social Media pentru doza zilnică de energie.',
       communityTitle: 'Inima LTD: Mai mult decât dans',
-      communityDesc: 'Suntem o comunitate de peste 20 de ani. Organizăm ieșiri lunare, tabere la munte și mare, și mergem împreună la festivaluri naționale.'
+      communityDesc: 'Suntem o comunitate de peste 20 de ani. Organizăm ieșiri lunare, tabere la munte și mare, și mergem împreună la festivaluri naționale.',
+      galleryCtaTitle: 'Surprinde Magia Dansului',
+      galleryCtaDesc: 'Bucură-te de momentele noastre speciale! Aruncă o privire peste energia din timpul cursurilor, de la petrecerile sociale și din festivaluri.',
+      galleryCtaBtn: 'Explorează Galeria'
+    },
+    features: {
+      ctaTitle: 'Vrei să înveți să dansezi?',
+      ctaDesc: 'Indiferent de stilul ales, abonamentul nostru lunar îți oferă libertate totală.',
+      ctaBtn: 'VEZI TARIFE & ÎNSCRIERE'
     },
     faq: {
       title: 'Întrebări Frecvente',
@@ -94,12 +102,12 @@ export const translations = {
       resetBtn: 'RESET',
       chartLine: 'Evoluție Liniară',
       chartBar: 'Distribuție pe Bare',
-      tabAnalytics: 'Analytics BI',
-      tabCommunity: 'Community',
-      tabModeration: 'Moderation',
-      tabCMS: 'CMS Texts',
-      tabBranding: 'Branding',
-      tabSecurity: 'Security',
+      tabAnalytics: 'Analiză BI',
+      tabCommunity: 'Comunitate',
+      tabModeration: 'Moderare Socială',
+      tabCMS: 'Editor Texte (CMS)',
+      tabBranding: 'Studio Branding',
+      tabSecurity: 'Securitate',
       userExplorer: 'Community Explorer',
       userExplorerSub: 'Gestionarea profilurilor care interacționează.',
       socialMod: 'Moderare Social',
@@ -149,7 +157,15 @@ export const translations = {
       socialTitle: 'LTD Family Vibe',
       socialSubtitle: 'Follow us on Social Media for your daily dose of energy.',
       communityTitle: 'LTD Heart: More than just dance',
-      communityDesc: 'A community for over 20 years. We organize monthly outings, mountain/sea trips, and attend national festivals together.'
+      communityDesc: 'A community for over 20 years. We organize monthly outings, mountain/sea trips, and attend national festivals together.',
+      galleryCtaTitle: 'Capture the Magic of Dance',
+      galleryCtaDesc: 'Enjoy our special moments! Take a look at the energy during classes, social parties, and festivals.',
+      galleryCtaBtn: 'Explore Gallery'
+    },
+    features: {
+      ctaTitle: 'Do you want to learn to dance?',
+      ctaDesc: 'Regardless of the chosen style, our monthly subscription offers you total freedom.',
+      ctaBtn: 'SEE PRICING & ENROLL'
     },
     faq: {
       title: 'FAQ',
@@ -255,7 +271,7 @@ export const translations = {
     nav: {
       home: 'Start', about: 'Über uns', classes: 'Kurse', schedule: 'Programm',
       events: 'Events', instructors: 'Lehrer', gallery: 'Galerie',
-      contact: 'Kontakt', login: 'Login', pricing: 'Preise',
+      contact: 'Contact', login: 'Login', pricing: 'Preise',
       faq: 'FAQ', combinations: 'Kombis',
       getStarted: 'Start', selectLang: 'Sprache:', dashboard: 'Admin'
     },
@@ -274,7 +290,15 @@ export const translations = {
       socialTitle: 'LTD Family Vibe',
       socialSubtitle: 'Folgen Sie uns auf Social Media für Ihre tägliche Dosis Energie.',
       communityTitle: 'Das Herz von LTD: Mehr als Tanz',
-      communityDesc: 'Seit über 20 Jahren eine Gemeinschaft. Monatliche Ausflüge, Reisen und Festivals.'
+      communityDesc: 'Seit über 20 Jahren eine Gemeinschaft. Monatliche Ausflüge, Reisen und Festivals.',
+      galleryCtaTitle: 'Fangen Sie die Magie des Tanzes ein',
+      galleryCtaDesc: 'Genießen Sie unsere besonderen Momente! Werfen Sie einen Blick auf die Energie während der Kurse, Partys und Festivals.',
+      galleryCtaBtn: 'Galerie erkunden'
+    },
+    features: {
+      ctaTitle: 'Möchten Sie tanzen lernen?',
+      ctaDesc: 'Unabhängig vom gewählten Stil bietet Ihnen unser Monatsabonnement totale Freiheit.',
+      ctaBtn: 'PREISE & ANMELDUNG ANSEHEN'
     },
     faq: {
       title: 'FAQ',
@@ -399,7 +423,15 @@ export const translations = {
       socialTitle: 'L\'ambiance LTD Family',
       socialSubtitle: 'Suivez-nous sur les réseaux sociaux pour votre dose d\'énergie.',
       communityTitle: 'Le Cœur de LTD : Plus que de la danse',
-      communityDesc: 'Une communauté depuis plus de 20 ans. Sorties mensuelles, voyages et festivals nationaux.'
+      communityDesc: 'Une communauté depuis plus de 20 ans. Sorties mensuelles, voyages et festivals nationaux.',
+      galleryCtaTitle: 'Capturez la magie de la danse',
+      galleryCtaDesc: 'Profitez de nos moments spéciaux ! Jetez un coup d\'œil à l\'énergie pendant les cours, les soirées sociales et les festivals.',
+      galleryCtaBtn: 'Explorer la galerie'
+    },
+    features: {
+      ctaTitle: 'Voulez-vous apprendre à danser ?',
+      ctaDesc: 'Quel que soit le style choisi, notre abonnement mensuel vous offre une liberté totale.',
+      ctaBtn: 'VOIR LES TARIFS ET L\'INSCRIPTION'
     },
     faq: {
       title: 'FAQ',
