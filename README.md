@@ -7,13 +7,12 @@ Vizualizează aplicația live aici: **[https://love-to-dance-family.surge.sh/](h
 
 ---
 
-## 🆕 Recent Update: Social Hub Transformation (Martie 2026)
-Ultimul update a transformat platforma dintr-o prezentare statică într-un **Social Hub** interactiv, axat pe implicarea comunității:
-- **Sistem Social Complet:** Implementare Like, Share și Comentarii cu persistență locală pe toate elementele media.
-- **Featured Choreography:** Secțiunea "Nou la Curs" din pagina de Combinatii, care evidențiază automat cea mai recentă coregrafie pentru un impact maxim.
-- **Dynamic Comment Drawer:** Discuții în timp real peste videoclipuri în stil TikTok/Reels, folosind tehnici de "Layer Isolation" pentru stabilitatea video-ului.
-- **Galerie Modernă:** Reorganizare stil Facebook cu flux vertical și sistem de Tag-uri active pentru filtrare inteligentă.
-- **Premium UX:** Formate de dată internaționale, auto-scroll la postare și animații de focus pentru o experiență de utilizare de top.
+## 🆕 Recent Update: Actualizare Dashboard de Admin (v2.0)
+Această versiune transformă Dashboard-ul într-un centru de control complet pentru managementul site-ului:
+1. **Theme Builder:** Un editor vizual live unde se pot schimba culorile de brand (Accent, Fundal Site, Carduri), precum și rotunjirile butoanelor și ale casetelor. Schimbările se aplică instantaneu și sunt persistente.
+2. **Gestiune Texte (CMS):** Corina poate acum edita orice text de pe site (titluri, descrieri, butoane) direct din interfață, pentru fiecare limbă în parte. Textele editate sunt salvate local și suprascriu versiunile implicite.
+3. **Social Hub Moderator:** O zonă centralizată unde adminul vede toată activitatea (Like-uri, Comentarii, Tag-uri) mapată pe ID-urile fișierelor media. Poate șterge comentarii nepotrivite sau elimina tag-uri greșite cu un singur click.
+4. **Media Monitor:** Un panou de control pentru verificarea statusului scanării automate a fișierelor din folderul de stocare.
 
 ### 🛡️ Optimizare SEO & Performanță
 Utilizarea bibliotecilor **framer-motion** și **lucide-react** nu afectează negativ SEO, ci contribuie activ la succesul platformei:
