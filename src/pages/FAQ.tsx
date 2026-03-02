@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { LanguageContext } from '../App';
 import '../App.css';
 
@@ -112,16 +113,16 @@ function FAQ() {
         ))}
       </div>
       
-      <div style={{ marginTop: '6rem', textAlign: 'center' }}>
+      <div style={{ marginTop: '6rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>{t.faq.contactTitle}</h3>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>{t.faq.contactDesc}</p>
-        <motion.button 
+        <Link 
+          to="/contact"
           className="btn-primary-full" 
-          style={{ maxWidth: '250px' }} 
-          onClick={() => window.location.href = 'mailto:corina@lovetodance.ro'}
+          style={{ maxWidth: '250px', whiteSpace: 'nowrap', display: 'inline-block', textDecoration: 'none', textAlign: 'center' }} 
         >
           {t.faq.btnContact}
-        </motion.button>
+        </Link>
       </div>
     </motion.div>
   );

@@ -12,24 +12,24 @@ const instructorAssets = import.meta.glob('../../public/Storage/Instructori/**/*
 
 function InstructorGallery({ teamId }: { teamId: string }) {
   const { addToast } = useContext(ToastContext);
-  const { user } = useContext(AuthContext);
+  const { user, bannedUsers, isContentVisible } = useContext(AuthContext);
   
   const [activeIndex, setActiveIndex] = useState(0);
-  const [activeTag, setActiveTag] = useState<string | null>(null);
-  const [newTag, setNewTag] = useState('');
-  
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const animRef = useRef<number | null>(null);
-  const hoverRef = useRef<number>(0);
-  const [showControls, setShowControls] = useState(false);
-  const [showShareMenu, setShowShareMenu] = useState(false);
-
   const [socialData, setSocialData] = useState<any>(() => {
     try {
       const saved = localStorage.getItem('ltd_social_data');
       return saved ? JSON.parse(saved) : {};
     } catch { return {}; }
   });
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [newTag, setNewTag] = useState('');
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isHovering = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   const allMedia = useMemo(() => {
     return Object.entries(instructorAssets)
@@ -45,14 +45,20 @@ function InstructorGallery({ teamId }: { teamId: string }) {
       });
   }, [teamId]);
 
-  // FILTRARE PRIN TAG-URI
+  // FILTRARE PRIN TAG-URI SI VIZIBILITATE
   const media = useMemo(() => {
-    if (!activeTag) return allMedia;
     return allMedia.filter(item => {
-      const itemData = socialData[item.id];
-      return itemData?.tags?.includes(activeTag.toLowerCase());
+      const itemData = socialData[item.id] || { tags: [] };
+      
+      // LOGICĂ VIZIBILITATE
+      if (!isContentVisible(item.id, itemData.tags)) return false;
+
+      if (activeTag) {
+        return itemData.tags.includes(activeTag.toLowerCase());
+      }
+      return true;
     });
-  }, [allMedia, activeTag, socialData]);
+  }, [allMedia, activeTag, socialData, isContentVisible]);
 
   useEffect(() => { setActiveIndex(0); }, [activeTag]);
 
@@ -60,55 +66,51 @@ function InstructorGallery({ teamId }: { teamId: string }) {
     localStorage.setItem('ltd_social_data', JSON.stringify(socialData));
   }, [socialData]);
 
-  // HOVER SCROLL LOGIC
-  const startHoverScroll = () => {
-    if (animRef.current) return;
-    const animate = () => {
-      if (scrollRef.current && Math.abs(hoverRef.current) > 0.05) {
-        scrollRef.current.scrollLeft += hoverRef.current * 15;
-      }
-      animRef.current = requestAnimationFrame(animate);
-    };
-    animRef.current = requestAnimationFrame(animate);
+  const startHoverScroll = (e: React.MouseEvent) => {
+    isHovering.current = true;
+    if (!scrollRef.current) return;
+    startX.current = e.pageX - scrollRef.current.offsetLeft;
+    scrollLeft.current = scrollRef.current.scrollLeft;
   };
 
   const stopHoverScroll = () => {
-    if (animRef.current) { cancelAnimationFrame(animRef.current); animRef.current = null; }
-    hoverRef.current = 0;
+    isHovering.current = false;
   };
 
   const handleMouseMoveHover = (e: React.MouseEvent) => {
-    if (!scrollRef.current) return;
-    const rect = scrollRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const normalizedX = x / rect.width;
-
-    if (normalizedX > 0.3 && normalizedX < 0.7) {
-      hoverRef.current = 0;
-    } else if (normalizedX <= 0.3) {
-      hoverRef.current = -1 * ((0.3 - normalizedX) / 0.3);
-    } else {
-      hoverRef.current = (normalizedX - 0.7) / 0.3;
-    }
+    if (!isHovering.current || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX.current) * 2; 
+    scrollRef.current.scrollLeft = scrollLeft.current - walk;
   };
 
   const handleLike = () => {
     const current = media[activeIndex];
     if (!current) return;
+
+    // Protectie ban
+    if (user && bannedUsers.includes(user.name)) return;
+
     const userId = user?.id || 'guest-session';
-    const itemData = socialData[current.id] || { likes: Math.floor(Math.random() * 20) + 5, likedBy: [], tags: [] };
-    const likedBy = itemData.likedBy || [];
-    const isLiked = likedBy.includes(userId);
+    const itemData = socialData[current.id] || { likes: 0, likedBy: [], tags: [] };
     
-    const newLikedBy = isLiked ? likedBy.filter((id: string) => id !== userId) : [...likedBy, userId];
-    const newLikes = (itemData.likes || 0) + (isLiked ? -1 : 1);
+    const hasLiked = (itemData.likedBy || []).includes(userId);
+    let newLikes = itemData.likes || 0;
+    let newLikedBy = itemData.likedBy || [];
+    
+    if (hasLiked) {
+      newLikes = Math.max(0, newLikes - 1);
+      newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+    } else {
+      newLikes += 1;
+      newLikedBy.push(userId);
+    }
 
     setSocialData((prev: any) => ({
       ...prev,
       [current.id]: { ...itemData, likes: newLikes, likedBy: newLikedBy }
     }));
-
-    if (!isLiked) addToast('❤️', 'info');
   };
 
   const handleAddTag = (e: React.KeyboardEvent) => {

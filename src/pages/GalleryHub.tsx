@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Heart, MessageCircle, Share2, Send, Facebook, MessageSquare, Link as LinkIcon, X, Instagram, Music2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Send, Facebook, MessageSquare, Link as LinkIcon, X, Instagram, Music2, EyeOff } from 'lucide-react';
 import { AuthContext, ToastContext } from '../App';
 import '../App.css';
 
@@ -35,7 +35,7 @@ interface Comment { user: string; text: string; isAdmin: boolean; date: string; 
 interface SocialState { [mediaId: string]: { tags: string[]; comments: Comment[]; likes?: number; likedBy?: string[]; }; }
 
 function GalleryHub() {
-  const { user } = useContext(AuthContext);
+  const { user, isContentVisible, bannedUsers } = useContext(AuthContext);
   const { addToast } = useContext(ToastContext);
   
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -79,17 +79,13 @@ function GalleryHub() {
     animRef.current = requestAnimationFrame(animate);
   };
 
-  const stopHoverScroll = () => {
-    if (animRef.current) {
-      cancelAnimationFrame(animRef.current);
-      animRef.current = null;
-    }
-    hoverRef.current = 0;
-  };
-  // Folosim functia pentru a evita eroarea de neutilizare
-  useEffect(() => {
-    return () => stopHoverScroll();
-  }, []);
+  // const stopHoverScroll = () => {
+  //   if (animRef.current) {
+  //     cancelAnimationFrame(animRef.current);
+  //     animRef.current = null;
+  //   }
+  //   hoverRef.current = 0;
+  // };
 
   const handleMouseMoveHover = (e: React.MouseEvent) => {
     if (!scrollRef.current || isDragging) return;
@@ -109,15 +105,19 @@ function GalleryHub() {
   // --- FILTRARE ---
   const filteredItems = useMemo(() => {
     let items = autoGalleryData.filter(item => {
+      const itemSocial = socialData[item.id] || { tags: [] };
+      
+      // Control vizibilitate #hidden
+      if (!isContentVisible(item.id, itemSocial.tags)) return false;
+
       const matchesDance = activeDance === 'All' || item.dance === activeDance;
       if (activeTag) {
-        const itemSocial = socialData[item.id];
-        return matchesDance && itemSocial?.tags?.includes(activeTag.toLowerCase());
+        return matchesDance && itemSocial.tags.includes(activeTag.toLowerCase());
       }
       return matchesDance;
     });
     return items.sort((a, b) => sortOrder === 'desc' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp);
-  }, [activeDance, activeTag, socialData, sortOrder]);
+  }, [activeDance, activeTag, socialData, sortOrder, isContentVisible]);
 
   useEffect(() => { setActiveIndex(0); }, [activeDance, activeTag]);
 
@@ -147,17 +147,20 @@ function GalleryHub() {
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim() || !activeItem) return;
+
+    // Protectie: Utilizatorii banati nu pot comenta
+    if (user && bannedUsers.includes(user.name)) {
+      addToast('Contul tău a fost suspendat pentru nerespectarea regulamentului.', 'error');
+      return;
+    }
+
     const comment: Comment = { 
       user: user?.name || 'Vizitator', 
       text: newComment, 
       isAdmin: user?.role === 'admin', 
       date: new Date().toLocaleString('en-GB', { 
-        day: 'numeric', 
-        month: 'short', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false
+        day: 'numeric', month: 'short', year: 'numeric', 
+        hour: '2-digit', minute: '2-digit', hour12: false 
       }).replace(',', '')
     };
     setSocialData(prev => ({ ...prev, [activeItem.id]: { ...currentSocial, comments: [...currentSocial.comments, comment] } }));
@@ -194,6 +197,9 @@ function GalleryHub() {
 
   const handleLike = () => {
     if (!activeItem) return;
+    // Protectie ban
+    if (user && bannedUsers.includes(user.name)) return;
+
     const userId = user?.id || 'guest-session';
     const likedBy = currentSocial.likedBy || [];
     const isLiked = likedBy.includes(userId);
@@ -251,17 +257,22 @@ function GalleryHub() {
                 onMouseEnter={startHoverScroll} onMouseMoveCapture={handleMouseMoveHover}
                 style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', padding: '1rem 0', scrollbarWidth: 'none', cursor: isDragging ? 'grabbing' : 'grab' }}
               >
-                {filteredItems.map((item, idx) => (
-                  <div 
-                    key={item.id} onClick={() => setActiveIndex(idx)} 
-                    style={{ width: '120px', height: '80px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, border: `3px solid ${activeIndex === idx ? 'var(--primary)' : 'transparent'}`, opacity: activeIndex === idx ? 1 : 0.6, cursor: 'pointer' }}
-                  >
-                    {item.type === 'image' ? <img src={item.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <video src={item.url + '#t=0.5'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />}
-                  </div>
-                ))}
+                {filteredItems.map((item, idx) => {
+                  const itemTags = socialData[item.id]?.tags || [];
+                  const isHidden = itemTags.includes('hidden');
+                  return (
+                    <div 
+                      key={item.id} onClick={() => setActiveIndex(idx)} 
+                      style={{ width: '120px', height: '80px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, border: `3px solid ${activeIndex === idx ? 'var(--primary)' : 'transparent'}`, opacity: activeIndex === idx ? 1 : 0.6, cursor: 'pointer', position: 'relative' }}
+                    >
+                      {item.type === 'image' ? <img src={item.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <video src={item.url + '#t=0.5'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />}
+                      {isHidden && <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,68,68,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeOff size={20} color="#fff"/></div>}
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="gallery-viewer-container" onClick={handleViewerClick} onDoubleClick={handleLike} onMouseEnter={() => setShowControls(true)} onMouseLeave={() => setShowControls(false)}>
+              <div className="gallery-viewer-container" onClick={handleViewerClick} onDoubleClick={handleLike} onMouseEnter={() => setShowControls(true)} onMouseLeave={() => { setShowControls(false); setShowShareMenu(false); }}>
                 <div className="media-interaction-bar">
                   <div className={`interaction-item ${isLikedByMe ? 'liked' : ''}`} onClick={handleLike}>
                     <div className="interaction-btn"><Heart size={24} fill={isLikedByMe ? "currentColor" : "none"} /></div>
@@ -297,6 +308,7 @@ function GalleryHub() {
                   <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
                     <span className="badge" style={{ background: 'var(--primary)' }}>{activeItem.dance}</span>
                     <span className="badge" style={{ background: 'rgba(255,255,255,0.2)' }}>{activeItem.dateDisplay}</span>
+                    {currentSocial.tags.includes('hidden') && <span className="badge" style={{ background: '#ff4444' }}>HIDDEN FROM PUBLIC</span>}
                   </div>
                   <h3 style={{ margin: 0 }}>{activeItem.name}</h3>
                 </div>
@@ -312,9 +324,7 @@ function GalleryHub() {
                       <div key={i} className="comment-bubble">
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.6rem', alignItems: 'center' }}>
                           <strong style={{ color: 'var(--primary)', fontWeight: 800 }}>{c.user}</strong>
-                          <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.5rem', borderRadius: '10px' }}>
-                            {c.date}
-                          </span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.5rem', borderRadius: '10px' }}>{c.date}</span>
                         </div>
                         <div>{c.text}</div>
                       </div>
@@ -322,57 +332,30 @@ function GalleryHub() {
                   </div>
                   <form onSubmit={handleAddComment} style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
                     <div className="comment-input-wrapper">
-                      <div className="user-avatar-mini">
-                        {user?.name ? user.name.charAt(0).toUpperCase() : 'V'}
-                      </div>
-                      <input 
-                        ref={commentInputRef} 
-                        type="text" 
-                        placeholder="Scrie un comentariu..." 
-                        value={newComment} 
-                        onChange={e => setNewComment(e.target.value)} 
-                        style={{ flex: 1, background: 'transparent', border: 'none', color: '#fff', outline: 'none', fontSize: '0.95rem' }} 
-                      />
-                      <motion.button 
-                        type="submit" 
-                        className="btn-send-animated"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <Send size={18} />
-                      </motion.button>
+                      <div className="user-avatar-mini">{user?.name ? user.name.charAt(0).toUpperCase() : 'V'}</div>
+                      <input ref={commentInputRef} type="text" placeholder="Scrie un comentariu..." value={newComment} onChange={e => setNewComment(e.target.value)} style={{ flex: 1, background: 'transparent', border: 'none', color: '#fff', outline: 'none', fontSize: '0.95rem' }} />
+                      <motion.button type="submit" className="btn-send-animated" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}><Send size={18} /></motion.button>
                     </div>
-                    <div style={{ fontSize: '0.7rem', opacity: 0.4, marginTop: '0.6rem', marginLeft: '3rem' }}>
-                      Comentezi ca <strong>{user?.name || 'Vizitator'}</strong>
-                    </div>
+                    <div style={{ fontSize: '0.7rem', opacity: 0.4, marginTop: '0.6rem', marginLeft: '3rem' }}>Comentezi ca <strong>{user?.name || 'Vizitator'}</strong></div>
                   </form>
                 </div>
 
-                {/* DREAPTA: TAG-URI (Zona secundară) - Afișată condiționat */}
                 {(currentSocial.tags.length > 0 || user?.role === 'admin') && (
                   <div className="tags-column">
                     <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '1.2rem', textTransform: 'uppercase', textAlign: 'left' }}>Tags</div>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                       {currentSocial.tags.map(tag => (
                         <span key={tag} className="tag-pill" onClick={() => setActiveTag(tag)}>
-                          #{tag} 
-                          {user?.role === 'admin' && (
-                            <span onClick={(e) => { e.stopPropagation(); removeTag(tag); }} style={{ opacity: 0.5, marginLeft: '0.4rem' }}>×</span>
-                          )}
+                          #{tag} {user?.role === 'admin' && <span onClick={(e) => { e.stopPropagation(); removeTag(tag); }} style={{ opacity: 0.5, marginLeft: '0.4rem' }}>×</span>}
                         </span>
                       ))}
                     </div>
-                    
                     {user?.role === 'admin' ? (
                       <>
                         <input type="text" placeholder="Adaugă #tag..." value={newTag} onChange={e => setNewTag(e.target.value)} onKeyDown={handleAddTag} className="social-input" />
-                        <div style={{ fontSize: '0.65rem', opacity: 0.4, marginTop: '0.5rem' }}>Doar adminul poate gestiona tag-urile.</div>
+                        <div style={{ fontSize: '0.65rem', opacity: 0.4, marginTop: '0.5rem' }}>Admin: Folosește #hidden pentru a ascunde public.</div>
                       </>
-                    ) : (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                        Click pe un tag pentru a filtra galeria.
-                      </div>
-                    )}
+                    ) : <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Click pe un tag pentru a filtra galeria.</div>}
                   </div>
                 )}
               </div>

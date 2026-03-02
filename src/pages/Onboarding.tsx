@@ -87,7 +87,7 @@ function Onboarding() {
         <div className="feature-card fade-in" style={{ width: '100%', maxWidth: '500px', textAlign: 'center', padding: '5rem 2rem' }}>
           <div className="loading-spinner" style={{ margin: '0 auto 2.5rem auto', width: '70px', height: '70px', border: '5px solid rgba(239, 68, 68, 0.1)', borderLeftColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
           <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>{t.onboarding.scanning}</h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginTop: '1rem' }}>Căutăm cea mai potrivită grupă pentru tine la LovetoDance...</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginTop: '1rem' }}>Căutăm cea mai potrivită grupă pentru tine la LoveToDance...</p>
         </div>
       )}
 

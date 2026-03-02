@@ -2,7 +2,7 @@ import { Logo } from '../App';
 import '../App.css';
 
 function Status() {
-  const studentName = "Elev LovetoDance";
+  const studentName = "Elev LoveToDance";
   const lastUpdate = "Azi, 10:00";
 
   return (
@@ -34,7 +34,7 @@ function Status() {
 
         <p style={{ marginTop: '2.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
           Ultima actualizare a prezenței: {lastUpdate}.<br/>
-          Membru al comunității <strong>LovetoDance</strong>
+          Membru al comunității <strong>LoveToDance</strong>
         </p>
         
         <a href="/" style={{ display: 'inline-block', marginTop: '2.5rem', fontSize: '0.9rem', color: 'var(--primary)', textDecoration: 'none', fontWeight: 700 }}>

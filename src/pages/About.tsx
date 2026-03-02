@@ -74,7 +74,7 @@ function About() {
             {t.aboutPage?.content || 'Suntem o comunitate de dansatori entuziaști.'}
           </p>
           <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-muted)' }}>
-            La LovetoDance, credem că dansul este cea mai scurtă cale către fericire. Comunitatea noastră este formată din oameni pasionați care au descoperit că salsa și bachata sunt mai mult decât pași pe muzică.
+            La LoveToDance, credem că dansul este cea mai scurtă cale către fericire. Comunitatea noastră este formată din oameni pasionați care au descoperit că salsa și bachata sunt mai mult decât pași pe muzică.
           </p>
         </motion.div>
       </motion.div>

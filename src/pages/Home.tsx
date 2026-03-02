@@ -168,13 +168,13 @@ function Home() {
         <div className="hero-content" style={{ zIndex: 10, position: 'relative', marginTop: '-5vh', pointerEvents: 'none' }}>
           <motion.span 
             className="hero-accent"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ fontWeight: 900, display: 'block', marginBottom: '0.5rem' }}
           >
-            Love to Dance
-          </motion.span>
-          <motion.h1 
+            LoveToDance
+          </motion.span>          <motion.h1 
             className="hero-title-main"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
