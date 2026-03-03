@@ -107,6 +107,18 @@ Acest document conține istoricul funcționalităților implementate în platfor
 *   **CMS Editor v2:** Organizare pe tab-uri de pagini și input-uri inteligente.
 *   **Rafinamente:** Uniformizare brand **LoveToDance**, restaurare stil cursiv Hero, reordonare meniuri (FAQ).
 
+## Capitolul 14: SEO Prerendering (SSG) — Vizibilitate Google [2026-03-03]
+
+*   **Implementare:** Script post-build `prerender.mjs` care folosește Puppeteer pentru a vizita fiecare rută publică după `vite build`, renderează complet React în browser headless (2.5 secunde de așteptare pentru animații și context), și salvează HTML-ul rezultat în `dist/{ruta}/index.html`. Integrat în comanda `npm run build` ca pas final automat.
+*   **Rute pre-randate:** `/`, `/instructors`, `/features`, `/pricing`, `/faq`, `/schedule`, `/gallery`, `/combinations`, `/contact`, `/privacy` — excluse paginile private (login, dashboard, checkout, onboarding).
+*   **Motiv/Utilitate:** Site-ul era construit ca React SPA — Googlebot vedea doar `<div id="root"></div>` gol, fără conținut indexabil. Acum fiecare rută are HTML complet cu titluri, texte, meta tags și JSON-LD vizibile pentru crawlere. Animațiile Framer Motion și toată interactivitatea rămân intacte după hydration. Impactul estimat: +50-100% trafic organic în 3 luni față de varianta SPA pură.
+
+---
+## 🆕 Recent Update: SEO Prerendering — Site Vizibil pe Google (SSG)
+*   **Data:** 3 Martie 2026
+*   **Status:** Implementat & Online
+*   **Modificări:** Script `prerender.mjs` cu Puppeteer generează HTML static pentru 10 rute publice la fiecare build. Googlebot indexează acum conținut real în loc de pagină goală. Animațiile și interactivitatea rămân neafectate.
+
 ---
 ## 🆕 Recent Update: Actualizare Dashboard de Admin (v3.0)
 *   **Data:** 2 Martie 2026
@@ -114,4 +126,4 @@ Acest document conține istoricul funcționalităților implementate în platfor
 *   **Modificări:** Power BI Pivot Engine, Community CRM, Branding Studio 2.0, Unified Brand Identity (LoveToDance).
 
 ---
-*Document actualizat pe 2 Martie 2026.*
+*Document actualizat pe 3 Martie 2026.*

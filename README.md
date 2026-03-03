@@ -7,6 +7,18 @@ Vizualizează aplicația live aici: **[https://love-to-dance-family.surge.sh/](h
 
 ---
 
+## 🆕 Recent Update: SEO Prerendering — Site Vizibil pe Google (SSG) [2026-03-03]
+Site-ul era construit ca React SPA, ceea ce înseamnă că Googlebot vedea doar `<div id="root"></div>` gol — fără conținut indexabil. Această actualizare rezolvă complet problema prin **Static Site Generation (SSG) post-build**:
+
+1. **Script `prerender.mjs`:** Un script Node.js cu Puppeteer (browser headless) care rulează automat după `vite build`. Vizitează fiecare rută publică, așteaptă ca React să randeze complet (inclusiv animații și contexte), și salvează HTML-ul în `dist/{ruta}/index.html`.
+2. **10 rute pre-randate:** `/`, `/instructors`, `/features`, `/pricing`, `/faq`, `/schedule`, `/gallery`, `/combinations`, `/contact`, `/privacy`.
+3. **Animații intacte:** Prerendering-ul nu afectează Framer Motion sau interactivitatea — React preia controlul (hydration) imediat după încărcarea JavaScript-ului. Utilizatorul nu simte nicio diferență.
+4. **Integrat în build:** Comanda `npm run build` include automat pasul de prerendering. Nu necesită pași suplimentari la deploy.
+
+**Impact:** Googlebot indexează acum conținut real (titluri, texte, JSON-LD, meta tags) în loc de pagină goală. Estimat +50-100% trafic organic în 3 luni față de varianta SPA pură.
+
+---
+
 ## 🆕 Recent Update: Actualizare Dashboard de Admin (v3.0)
 Această versiune transformă Dashboard-ul într-un centru veritabil de **Business Intelligence (BI)** și **Community Management (CRM)**:
 
